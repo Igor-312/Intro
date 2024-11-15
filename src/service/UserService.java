@@ -3,8 +3,24 @@ package service;
 import models.User;
 import repository.UserRepository;
 
+import java.util.Map;
+
 public class UserService {
     private UserRepository userRepository = new UserRepository();
+
+    public static void giveAdminPermissions(int userId) {
+
+    }
+
+    public static void blockUser(int userId) {
+    }
+
+    public static void findUser(int userId) {
+    }
+
+    public static Map<Integer, User> allUsers() {
+        return Map.of();
+    }
 
     public UserRepository getUserRepository() {
         return userRepository;
