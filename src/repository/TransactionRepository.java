@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TransactionRepository {
-    private Map<String, ExchangeRate> users = new HashMap<>();
+    private Map<String, ExchangeRate> transactions = new HashMap<>();
 
 
     //map integer(accountID) /list <transaction>
