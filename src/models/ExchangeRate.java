@@ -1,30 +1,15 @@
 package models;
 
+import java.time.LocalDateTime;
+
 public class ExchangeRate {
-    private Currency fromCurrency;
-    private Currency toCurrency;
     private double rate;
+    LocalDateTime date;
 
-    public ExchangeRate(Currency fromCurrency, Currency toCurrency, double rate) {
-        this.fromCurrency = fromCurrency;
-        this.toCurrency = toCurrency;
+
+    public ExchangeRate( double rate) {
+        date = LocalDateTime.now();
         this.rate = rate;
-    }
-
-    public Currency getFromCurrency() {
-        return fromCurrency;
-    }
-
-    public void setFromCurrency(Currency fromCurrency) {
-        this.fromCurrency = fromCurrency;
-    }
-
-    public Currency getToCurrency() {
-        return toCurrency;
-    }
-
-    public void setToCurrency(Currency toCurrency) {
-        this.toCurrency = toCurrency;
     }
 
     public double getRate() {
