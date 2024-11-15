@@ -10,14 +10,13 @@ public class User {
     private String password;
     private Role role;
     private boolean isBlocked;
-    private final List<User> users = new ArrayList<>();
 
-    public User(int id, String email, String password, Role role, boolean isBlocked) {
+    public User(int id, String email, String password, Role role) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.role = role;
-        this.isBlocked = isBlocked;
+        this.isBlocked = false;
     }
 
 
@@ -29,21 +28,9 @@ public class User {
                 ", password='" + password + '\'' +
                 ", role=" + role +
                 ", isBlocked=" + isBlocked +
-                ", users=" + users +
                 '}';
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof User)) return false;
-        User user = (User) o;
-        return id == user.id && isBlocked == user.isBlocked && Objects.equals(email, user.email) && Objects.equals(password, user.password) && role == user.role && Objects.equals(users, user.users);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, email, password, role, isBlocked, users);
-    }
 
     public int getId() {
         return id;
@@ -85,7 +72,5 @@ public class User {
         isBlocked = blocked;
     }
 
-    public List<User> getUsers() {
-        return users;
-    }
+
 }
