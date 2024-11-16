@@ -7,4 +7,8 @@ public class CurrencyService {
 
         return null;
     }
+
+    public void changeCurrencyRate(String currency, Double rate) {
+
+    }
 }

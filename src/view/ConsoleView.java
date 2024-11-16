@@ -10,6 +10,7 @@ import service.CurrencyService;
 import service.AccountService;
 import service.TransactionService;
 import service.UserService;
+import service.CurrencyService;
 
 import java.util.List;
 import java.util.Map;
@@ -19,12 +20,14 @@ public class ConsoleView {
     private final AccountService accountService;
     private final TransactionService transactionService;
     private final UserService userService;
+    private final CurrencyService currencyService;
     private final Scanner scanner = new Scanner(System.in);
 
-    public ConsoleView(AccountService accountService, TransactionService transactionService, UserService userService) {
+    public ConsoleView(AccountService accountService, TransactionService transactionService, UserService userService, CurrencyService currencyService) {
         this.accountService = accountService;
         this.transactionService = transactionService;
         this.userService = userService;
+        this.currencyService = currencyService;
     }
 
     private void waitRead() {
@@ -40,7 +43,6 @@ public class ConsoleView {
         while (true) {
 
             System.out.println("Welcome!");
-
             System.out.println("1. Login");
             System.out.println("2. Register");
             System.out.println("0. Exit");
@@ -51,7 +53,7 @@ public class ConsoleView {
 
             if (input == 0) {
                 System.out.println("Good bye!");
-                System.exit(0);//end app work
+                System.exit(0);
             }
             handleLoginPageChoice(input);
         }
@@ -72,7 +74,6 @@ public class ConsoleView {
                 boolean user1 = userService.loginUser(email2, password1);
 
                 if (user1 == true) {
-                    // System.out.println("User successfully logged in");
                     showHomePage();
                 }
                 waitRead();
@@ -111,10 +112,11 @@ public class ConsoleView {
         while (true) {
 
             System.out.println("Menu:");
-
             System.out.println("1. User menu");
             System.out.println("2. Admin menu");
-            System.out.println("0. Logout");
+            System.out.println("3. Logout");
+            System.out.println("0. Back");
+            System.out.println("\nSelect an option.");
 
             int input = scanner.nextInt();
             scanner.nextLine();
@@ -138,16 +140,18 @@ public class ConsoleView {
                     System.out.println("Admin menu is available only for admin.");
                 }
                 break;
+            case 3:
+                userService.logout();
+                System.out.println("You are logged out");
+
             default:
-                System.out.println("Select an option.");
+                System.out.println("\nIncorrect input, please enter a number!");
         }
     }
 
     private void showUserMenu() {
         while (true) {
-
             System.out.println("User menu:");
-
             System.out.println("1. Create account USD");
             System.out.println("2. Create account EUR");
             System.out.println("3. Create account BTC");//bitcoin
@@ -159,11 +163,9 @@ public class ConsoleView {
             System.out.println("9. Show currency exchange rates");
             System.out.println("10. Delete account");
             System.out.println("11. My accounts");
-
-
             System.out.println("0. Back");
-
             System.out.println("\n Select an option.");
+
             int input = scanner.nextInt();
             scanner.nextLine();
 
@@ -178,21 +180,24 @@ public class ConsoleView {
             case 1:
 
                 System.out.println("Create account USD");
-                AccountService.createAccountUSD();
+                accountService.createAccountUSD();
+                System.out.println("USD account created");
                 waitRead();
                 break;
 
             case 2:
 
                 System.out.println("Create account EUR");
-                AccountService.createAccountEUR();
+                accountService.createAccountEUR();
+                System.out.println("EUR account created");
                 waitRead();
                 break;
 
             case 3:
 
                 System.out.println("Create account BTC");
-                AccountService.createAccountBTC();
+                accountService.createAccountBTC();
+                System.out.println("BTC account created");
                 waitRead();
                 break;
 
@@ -208,7 +213,8 @@ public class ConsoleView {
                 double amountOfMoney = scanner.nextDouble();
                 scanner.nextLine();
 
-                TransactionService.addMoney(accountID,amountOfMoney);
+                transactionService.addMoney(accountID,amountOfMoney);
+                System.out.println("Money has been added");
 
                 waitRead();
                 break;
@@ -224,7 +230,8 @@ public class ConsoleView {
                 amountOfMoney = scanner.nextDouble();
                 scanner.nextLine();
 
-                TransactionService.withdrawMoney();
+                transactionService.withdrawMoney();
+                System.out.println("Money has been withdrawn");
 
                 waitRead();
                 break;
@@ -242,7 +249,8 @@ public class ConsoleView {
                 System.out.println("Currency (to): ");
                 String currencyTo = scanner.nextLine();
 
-                TransactionService.exchangeMoney(amountOfMoney,currencyFrom,currencyTo);
+                transactionService.exchangeMoney(amountOfMoney,currencyFrom,currencyTo);
+                System.out.println("Money has been exchanged");
 
                 waitRead();
                 break;
@@ -255,7 +263,7 @@ public class ConsoleView {
                 accountID = scanner.nextInt();
                 scanner.nextLine();
 
-                Map<Integer,List<Account>> account = AccountService.showBalance(accountID);
+                Map<Integer,List<Account>> account = accountService.showBalance(accountID);
                 System.out.println(account);
 
                 waitRead();
@@ -264,7 +272,7 @@ public class ConsoleView {
             case 8:
 
                 System.out.println("History");
-                Map<Integer, List<Transaction>> history = TransactionService.showHistory();
+                Map<Integer, List<Transaction>> history = transactionService.showHistory();
                 System.out.println(history);
 
                 waitRead();
@@ -273,7 +281,7 @@ public class ConsoleView {
             case 9:
 
                 System.out.println("Show currency exchange rates");
-                Map<String,String> exchangeRates = CurrencyService.showExchangeRates();
+                Map<String,String> exchangeRates = currencyService.showExchangeRates();
                 System.out.println(exchangeRates);
 
                 waitRead();
@@ -287,7 +295,7 @@ public class ConsoleView {
                 accountID = scanner.nextInt();
                 scanner.nextLine();
 
-                AccountService.deleteAccount(accountID);
+                accountService.deleteAccount(accountID);
 
                 waitRead();
                 break;
@@ -295,11 +303,15 @@ public class ConsoleView {
             case 11:
 
                 System.out.println("My accounts");
-                Map<Integer, List<Account>> myAccounts = AccountService.myAccounts();
+                Map<Integer, List<Account>> myAccounts = accountService.myAccounts();
                 System.out.println(myAccounts);
 
                 waitRead();
                 break;
+
+            default:
+
+                System.out.println("\nIncorrect input, please enter a number!");
         }
     }
 
@@ -307,7 +319,6 @@ public class ConsoleView {
         while (true) {
 
             System.out.println("Admin menu:");
-
             System.out.println("1. Change currency exchange rates");
             System.out.println("2. Give admin permissions");
             System.out.println("3. Block user");//bitcoin
@@ -326,6 +337,7 @@ public class ConsoleView {
             handleUserMenuChoice(input);
         }
     }
+
     private void handleAdminMenuChoice(int input) {
         switch (input) {
             case 1:
@@ -339,6 +351,9 @@ public class ConsoleView {
                 Double rate = scanner.nextDouble();
                 scanner.nextLine();
 
+                currencyService.changeCurrencyRate(currency,rate);
+                System.out.println("Currency rates are changed");
+
                 waitRead();
                 break;
 
@@ -350,7 +365,8 @@ public class ConsoleView {
                 int userId = scanner.nextInt();
                 scanner.nextLine();
 
-                UserService.giveAdminPermissions(userId);
+                userService.giveAdminPermissions(userId);
+                System.out.println("Admin permissions are given");
 
                 waitRead();
                 break;
@@ -363,7 +379,8 @@ public class ConsoleView {
                 userId = scanner.nextInt();
                 scanner.nextLine();
 
-                UserService.blockUser(userId);
+                userService.blockUser(userId);
+                System.out.println("User is blocked");
 
                 waitRead();
                 break;
@@ -376,7 +393,8 @@ public class ConsoleView {
                 userId = scanner.nextInt();
                 scanner.nextLine();
 
-                UserService.findUser(userId);
+                User user = userService.findUser(userId);
+                System.out.println(user);
 
                 waitRead();
                 break;
@@ -389,7 +407,7 @@ public class ConsoleView {
                 userId = scanner.nextInt();
                 scanner.nextLine();
 
-                Map<Integer, List<Transaction>> history = TransactionService.showUserHistory(userId);
+                Map<Integer, List<Transaction>> history = transactionService.showUserHistory(userId);
                 System.out.println(history);
 
                 waitRead();
@@ -399,17 +417,16 @@ public class ConsoleView {
 
                 System.out.println("Show all users");
 
-                Map<Integer, User> users = UserService.allUsers();
+                Map<Integer, User> users = userService.allUsers();
                 System.out.println(users);
 
                 waitRead();
                 break;
 
+            default:
+
+                System.out.println("\nIncorrect input, please enter a number!");
 
         }
     }
-
-
-
-
 }
