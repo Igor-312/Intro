@@ -21,7 +21,5 @@ public interface UserServiceInterface {
 
     boolean isUserAdmin();
 
-    User getActiveUser();
-
     void logout();
 }

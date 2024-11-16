@@ -42,11 +42,18 @@ public class UserRepository implements UserRepoInterface{
     }
 
     public void giveAdminPermissions(int userId){
+
         users.values().stream()
                 .filter(user -> user.getUserId() == userId)
                 .findFirst()
                 .ifPresentOrElse(
-                        user -> user.setRole(Role.ADMIN),
+                        user -> {
+                            if (user.getRole() != Role.ADMIN) {
+                                user.setRole(Role.ADMIN);
+                            } else {
+                                System.out.println("User is already Admin");
+                            }
+                        },
                 () -> {throw new IllegalArgumentException("User not found");}
                 );
     }

@@ -10,7 +10,7 @@ import java.util.Map;
 public class UserService implements UserServiceInterface {
 
     private static UserRepository userRepository;
-    private User activUser;
+    private User activeUser;
     private static User user;
     private static PersonValidator personValidator;
 
@@ -44,7 +44,7 @@ public class UserService implements UserServiceInterface {
             System.out.println("Invalid email or password.");
             return false;
         }
-        activUser = user;
+        activeUser = user;
         System.out.println("User is successfully logged in.");
         return true;
     }
@@ -68,19 +68,14 @@ public class UserService implements UserServiceInterface {
 
     @Override
     public boolean isUserAdmin() {
-        if (activUser.getRole() != Role.ADMIN) {
+        if (activeUser.getRole() != Role.ADMIN) {
             return false;
         }
         return true;
     }
 
     @Override
-    public User getActiveUser() {
-        return activUser;
-    }
-
-    @Override
     public void logout() {
-        activUser = null;
+        activeUser = null;
     }
 }
