@@ -5,22 +5,30 @@ import models.Transaction;
 import java.util.List;
 import java.util.Map;
 
-public class TransactionService {
-    public static void addMoney(int accountID, double amountOfMoney) {
+public class TransactionService implements TransactionServiceInterface{
+
+    @Override
+    public void addMoney(int accountID, double amountOfMoney) {
+
     }
 
-    public static void withdrawMoney() {
+    @Override
+    public void withdrawMoney() {
+
     }
 
-    public static void exchangeMoney(double amountOfMoney, String currencyFrom, String currencyTo) {
+    @Override
+    public void exchangeMoney(double amountOfMoney, String currencyFrom, String currencyTo) {
+
     }
 
-    public static Map<Integer, List<Transaction>> showHistory() {
-
-        return null;
+    @Override
+    public Map<Integer, List<Transaction>> showHistory() {
+        return Map.of();
     }
 
-    public static Map<Integer, List<Transaction>> showUserHistory(int userId) {
+    @Override
+    public Map<Integer, List<Transaction>> showUserHistory(int userId) {
         return Map.of();
     }
 }

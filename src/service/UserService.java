@@ -3,36 +3,41 @@ package service;
 import models.Role;
 import models.User;
 import repository.UserRepository;
-import utils.PersonValidate;
+import utils.PersonValidator;
 
 import java.util.Map;
 
-public class UserService {
+public class UserService implements UserServiceInterface {
 
     private static UserRepository userRepository;
     private User activUser;
     private static User user;
-    private static PersonValidate personValidate;
+    private static PersonValidator personValidator;
 
-    public static Map<Integer, User> allUsers() {
+    @Override
+    public Map<Integer, User> allUsers() {
         Map<Integer,User> allUsers = userRepository.allUsers();
         return allUsers;
     }
 
-    public static void giveAdminPermissions(int userId) {
+    @Override
+    public void giveAdminPermissions(int userId) {
         userRepository.giveAdminPermissions(userId);
         userRepository.giveAdminPermissions(2);//default test user
     }
 
-    public static void blockUser(int userId) {
+    @Override
+    public void blockUser(int userId) {
         userRepository.blockUser(userId);
     }
 
-    public static User findUser(int userId) {
+    @Override
+    public User findUser(int userId) {
         User user = userRepository.findUser(userId);
         return user;
     }
 
+    @Override
     public boolean loginUser(String email, String password) {
         User user = userRepository.getUserEmail(email);
         if (user == null || !user.getPassword().equals(password)) {
@@ -44,12 +49,13 @@ public class UserService {
         return true;
     }
 
+    @Override
     public User registerUser(String email, String password) {
-        if (!personValidate.isEmailValid(email)) {
+        if (!personValidator.isEmailValid(email)) {
             System.out.println("Please check the email.");
             return null;
         }
-        if (!personValidate.isPasswordValid(password)) {
+        if (!personValidator.isPasswordValid(password)) {
             System.out.println("Please check the password.");
             return null;
         }
@@ -60,6 +66,7 @@ public class UserService {
         return userRepository.addUser(email, password);
     }
 
+    @Override
     public boolean isUserAdmin() {
         if (activUser.getRole() != Role.ADMIN) {
             return false;
@@ -67,10 +74,12 @@ public class UserService {
         return true;
     }
 
-    private User getActiveUser() {
+    @Override
+    public User getActiveUser() {
         return activUser;
     }
 
+    @Override
     public void logout() {
         activUser = null;
     }

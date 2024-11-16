@@ -6,16 +6,16 @@ import models.User;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UserRepository {
+public class UserRepository implements UserRepoInterface{
     private static Map<Integer, User> users = new HashMap<>();
     private static int userIdCounter = 1;
 
-    public static void addDefaultUsers(){
+    public void addDefaultUsers(){
         users.put(1, new User("Masha123@gmail.com", "Masha123@gmail.com"));
         users.put(2, new User("Neshyna123@gmail.com", "Neshyna123@gmail.com"));
     }
 
-    public static User addUser(String email, String password){
+    public User addUser(String email, String password){
 
         if (isMailExist(email)) {
             throw new IllegalArgumentException("Email already exists.");
@@ -25,7 +25,7 @@ public class UserRepository {
         return newUser;
     }
 
-    public static boolean isMailExist(String email) {
+    public boolean isMailExist(String email) {
        if (users.values().stream()
                 .map(User::getEmail)
                 .allMatch(existEmail -> existEmail.equals(email))){
@@ -34,7 +34,7 @@ public class UserRepository {
        return false;
     }
 
-    public static User getUserEmail(String email) {
+    public User getUserEmail(String email) {
         return users.values().stream()
                 .filter(user -> user.getEmail().equals(email))
                 .findFirst()
@@ -51,7 +51,7 @@ public class UserRepository {
                 );
     }
 
-    public static void blockUser(int userId){
+    public void blockUser(int userId){
         users.values().stream()
                 .filter(user -> user.getUserId() == userId)
                 .findFirst()

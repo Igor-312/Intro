@@ -6,7 +6,7 @@ import models.User;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TransactionRepository {
+public class TransactionRepository implements TransactionRepoInterface{
     private Map<String, ExchangeRate> transactions = new HashMap<>();
 
 

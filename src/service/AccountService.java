@@ -5,26 +5,35 @@ import models.Account;
 import java.util.List;
 import java.util.Map;
 
-public class AccountService {
-    public static void createAccountUSD() {
+public class AccountService implements AccountServiceInterface{
+
+    @Override
+    public void createAccountUSD() {
+
     }
 
-    public static void createAccountEUR() {
+    @Override
+    public void createAccountEUR() {
+
     }
 
-    public static void createAccountBTC() {
+    @Override
+    public void createAccountBTC() {
+
     }
 
-
-    public static Map<Integer, List<Account>> showBalance(int accountID) {
-        return null;
+    @Override
+    public Map<Integer, List<Account>> showBalance(int accountID) {
+        return Map.of();
     }
 
-    public static void deleteAccount(int accountID) {
+    @Override
+    public void deleteAccount(int accountID) {
+
     }
 
-    public static Map<Integer, List<Account>> myAccounts() {
-
-        return null;
+    @Override
+    public Map<Integer, List<Account>> myAccounts() {
+        return Map.of();
     }
 }

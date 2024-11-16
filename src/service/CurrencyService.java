@@ -2,12 +2,15 @@ package service;
 
 import java.util.Map;
 
-public class CurrencyService {
-    public static Map<String, String> showExchangeRates() {
+public class CurrencyService implements CurrencyServiceInterface{
 
-        return null;
+
+    @Override
+    public Map<String, String> showExchangeRates() {
+        return Map.of();
     }
 
+    @Override
     public void changeCurrencyRate(String currency, Double rate) {
 
     }
