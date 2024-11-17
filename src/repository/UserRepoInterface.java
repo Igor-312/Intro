@@ -1,5 +1,9 @@
 package repository;
 
+import models.Account;
+
+import java.util.List;
+
 import models.Role;
 import models.User;
 
@@ -21,4 +25,7 @@ public interface UserRepoInterface {
     User findUser(int userId);
 
     Map<Integer, User> allUsers();
+  
+    List<Account> getAccountsByUserId(int userId);
 }
+

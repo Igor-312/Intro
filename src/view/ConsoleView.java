@@ -1,6 +1,8 @@
 package view;
 
 import models.Account;
+
+import models.Currency;
 import models.ExchangeRate;
 import models.Transaction;
 import models.User;
@@ -12,6 +14,8 @@ import service.TransactionService;
 import service.UserService;
 import service.CurrencyService;
 
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -181,6 +185,7 @@ public class ConsoleView {
     }
 
     private void handleUserMenuChoice(int input) {
+
         switch (input) {
             case 1:
 
@@ -435,3 +440,4 @@ public class ConsoleView {
         }
     }
 }
+
