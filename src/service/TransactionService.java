@@ -4,10 +4,14 @@ import models.Transaction;
 import repository.TransactionRepository;
 import service.TransactionServiceInterface;
 
+
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+
+import java.util.List;
+import java.util.Map;
 
 public class TransactionService implements TransactionServiceInterface {
 
@@ -68,11 +72,11 @@ public class TransactionService implements TransactionServiceInterface {
 
     @Override
     public void exchangeMoney(double amountOfMoney, String currencyFrom, String currencyTo) {
+
         if (amountOfMoney <= 0) {
             System.out.println("The amount of money must be greater than zero.");
             return;
         }
-
 
         double exchangeRate = getExchangeRate(currencyFrom, currencyTo); // Метод для получения курса обмена.
 
@@ -111,11 +115,11 @@ public class TransactionService implements TransactionServiceInterface {
         return transactionRepository.getAllTransactions()
                 .stream()
                 .collect(Collectors.groupingBy(Transaction::getAccountId));
-
     }
 
     @Override
     public Map<Integer, List<Transaction>> showUserHistory(int userId) {
+
         // Извлекаем все транзакции и фильтруем их по userId
         return transactionRepository.getAllTransactions()
                 .stream()
@@ -127,3 +131,4 @@ public class TransactionService implements TransactionServiceInterface {
         return (int) (Math.random() * 100000);
     }
 }
+
