@@ -13,6 +13,9 @@ public class Account {
         this.user = user;
     }
 
+    public Account(int accountId, String usd, double balance) {
+    }
+
     @Override
     public String toString() {
         return "Account{" +

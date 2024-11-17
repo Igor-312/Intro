@@ -9,9 +9,6 @@ import java.util.Map;
 
 public class AccountRepository implements AccountRepoInterface {
 
-    private Map<Integer, List<Account>> accounts = new HashMap<>();
-    //integer = userID
-
     // Хранилище аккаунтов (Map или List)
     private Map<Integer, Account> accounts = new HashMap<>();
 
