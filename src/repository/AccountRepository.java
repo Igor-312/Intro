@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AccountRepositoryImpl implements AccountRepoInterface {
+public class AccountRepository implements AccountRepoInterface {
 
     // Хранилище аккаунтов (Map или List)
     private Map<Integer, Account> accounts = new HashMap<>();
