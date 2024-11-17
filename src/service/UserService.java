@@ -3,7 +3,7 @@ package service;
 import models.Role;
 import models.User;
 import repository.UserRepository;
-import utils.PersonValidator;
+import utils.PersonValidate;
 
 import java.util.Map;
 
@@ -12,7 +12,7 @@ public class UserService implements UserServiceInterface {
     private static UserRepository userRepository;
     private User activeUser;
     private static User user;
-    private static PersonValidator personValidator;
+    private static PersonValidate personValidator;
 
     @Override
     public Map<Integer, User> allUsers() {

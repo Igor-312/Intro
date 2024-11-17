@@ -1,6 +1,6 @@
 package utils.validatorExeptions;
 
-import utils.PersonValidator;
+import utils.PersonValidate;
 
 public class PersonValidatorMain {
     public static void main(String[] args) {
@@ -10,10 +10,10 @@ public class PersonValidatorMain {
         String password = "";//delete later
 
         try {
-            PersonValidator.isEmailValid(email);
+            PersonValidate.isEmailValid(email);
             System.out.println("Email is valid");
 
-            PersonValidator.isPasswordValid(password);
+            PersonValidate.isPasswordValid(password);
             System.out.println("Password is valid");
 
         } catch (EmailValidateException exception) {

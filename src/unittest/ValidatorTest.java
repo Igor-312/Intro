@@ -3,7 +3,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import utils.PersonValidator;
+import utils.PersonValidate;
 
 
 import java.util.stream.Stream;
@@ -12,13 +12,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class ValidatorTest {
-    PersonValidator testUser;
+    PersonValidate testUser;
     String startEmail = "Neshyna@test.com";
     String startPassword = "Neshyna100%";
 
     @BeforeEach
     void setUp() {
-        testUser = new PersonValidator(startEmail,startPassword);
+        testUser = new PersonValidate(startEmail,startPassword);
     }
 
     @Test
