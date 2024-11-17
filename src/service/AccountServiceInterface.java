@@ -1,9 +1,8 @@
 package service;
-
+import java.util.Map;
 import models.Account;
 
 import java.util.List;
-import java.util.Map;
 
 public interface AccountServiceInterface {
 
@@ -15,7 +14,15 @@ public interface AccountServiceInterface {
 
     Map<Integer, List<Account>> showBalance(int accountID);
 
-    void deleteAccount(int accountID);
-
     Map<Integer, List<Account>> myAccounts();
+  
+ // Получение аккаунта по ID
+    Account getAccountById(int accountId);
+
+    // Пополнение баланса
+    void deposit(int accountId, double amount);
+
+    // Снятие средств
+    void withdraw(int accountId, double amount);
+
 }
