@@ -16,7 +16,7 @@ public interface AccountRepoInterface {
     List<Account> getAllAccount();
 
     // Обновление существующего аккаунта
-    void updateAccount(Account account);
+    void updateAccountBalance(int accountId, double amount);
 
     // Удаление аккаунта
     void deleteAccount(int accountId);

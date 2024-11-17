@@ -2,48 +2,47 @@ package repository;
 
 import models.Account;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class AccountRepositoryImpl implements AccountRepoInterface {
+
+    // Хранилище аккаунтов (Map или List)
     private Map<Integer, Account> accounts = new HashMap<>();
 
-
+    // Создать аккаунт
     @Override
     public void createAccount(Account account) {
-        account.add(account);
+        accounts.put(account.getAccountId(), account); // Добавление в Map
     }
 
+    // Получить аккаунт по ID
     @Override
     public Account getAccountById(int accountId) {
-        for (Account account : accounts) {
-            if (account.getAccountId() == accountId) {
-                return account;
-            }
-        }
-
-        return null;
+        return accounts.get(accountId); // Доступ к Map по ключу
     }
 
+    // Получить все аккаунты
     @Override
     public List<Account> getAllAccount() {
-        return List.of();
+        return new ArrayList<>(accounts.values()); // Конвертация Map в List
     }
 
+    // Пополнение баланса
     @Override
-    public void updateAccount(Account account) {
-        // Поиск и обновление логики
-        Account existingAccount = getAccountById(account.getAccountId());
-        if (existingAccount != null) {
-            existingAccount.setCurrency(account.getCurrency());
-            existingAccount.setBalance(account.getBalance());
-            existingAccount.setUser(account.getUser());
+    public void updateAccountBalance(int accountId, double amount) {
+        Account account = getAccountById(accountId);
+        if (account != null) {
+            account.setBalance(account.getBalance() + amount); // Обновление баланса
         }
     }
 
+    // Удалить аккаунт
     @Override
     public void deleteAccount(int accountId) {
-        accounts.removeIf(account -> account.getAccountId() == accountId);
+        accounts.remove(accountId); // Удаление из Map
     }
+
 }
