@@ -1,56 +1,38 @@
 package models;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 public class User {
-    private int id;
+
+    private static int userIdCounter = 0;
+    private int userId;
     private String email;
     private String password;
     private Role role;
-    private boolean isBlocked;
-    private final List<User> users = new ArrayList<>();
 
-    public User(int id, String email, String password, Role role, boolean isBlocked) {
-        this.id = id;
+    public User( String email, String password) {
         this.email = email;
         this.password = password;
         this.role = role;
-        this.isBlocked = isBlocked;
+        this.userId = userIdCounter++;
     }
 
 
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "id=" + userId +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", role=" + role +
-                ", isBlocked=" + isBlocked +
-                ", users=" + users +
                 '}';
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof User)) return false;
-        User user = (User) o;
-        return id == user.id && isBlocked == user.isBlocked && Objects.equals(email, user.email) && Objects.equals(password, user.password) && role == user.role && Objects.equals(users, user.users);
+
+    public int getUserId() {
+        return userId;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, email, password, role, isBlocked, users);
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public void setUserId(int id) {
+        this.userId = id;
     }
 
     public String getEmail() {
@@ -77,15 +59,7 @@ public class User {
         this.role = role;
     }
 
-    public boolean isBlocked() {
-        return isBlocked;
-    }
 
-    public void setBlocked(boolean blocked) {
-        isBlocked = blocked;
-    }
 
-    public List<User> getUsers() {
-        return users;
-    }
+
 }

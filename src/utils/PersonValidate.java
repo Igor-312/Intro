@@ -1,6 +1,7 @@
 package utils;
 
 public class PersonValidate {
+
     private String email;
     private String password;
 
@@ -112,4 +113,5 @@ public class PersonValidate {
                 ", password='" + password + '\'' +
                 '}';
     }
+
 }
