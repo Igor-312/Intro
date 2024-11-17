@@ -7,13 +7,15 @@ import java.util.Map;
 
 public interface TransactionServiceInterface {
 
-    void addMoney(int accountID, double amountOfMoney);
+    void addMoney(int accountID, double amountOfMoney, Transaction transaction);
 
-    void withdrawMoney();
+    void withdrawMoney(int accountID, double amountOfMoney);
+
 
     void exchangeMoney(double amountOfMoney, String currencyFrom, String currencyTo);
 
     Map<Integer, List<Transaction>> showHistory();
 
     Map<Integer, List<Transaction>> showUserHistory(int userId);
+
 }
