@@ -75,6 +75,14 @@ public class UserService implements UserServiceInterface {
     }
 
     @Override
+    public boolean isUserBlocked() {
+        if (activeUser.getRole() != Role.BLOCKED) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void logout() {
         activeUser = null;
     }

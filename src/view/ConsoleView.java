@@ -73,9 +73,15 @@ public class ConsoleView {
 
                 boolean user1 = userService.loginUser(email2, password1);
 
+                if (userService.isUserBlocked()){
+                    System.out.println("Login is not possible for blocked users. Please contact your manager");
+                    showLoginPage();
+                }
+
                 if (user1 == true) {
                     showHomePage();
                 }
+
                 waitRead();
                 break;
             case 2:
@@ -94,7 +100,6 @@ public class ConsoleView {
                     System.out.println("Registered successfully! Please Login!");
                     showLoginPage();
                 } else {
-
                     System.out.println("Registration failed.");
                     showLoginPage();
                 }

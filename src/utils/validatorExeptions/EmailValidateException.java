@@ -1,8 +1,8 @@
 package utils.validatorExeptions;
 
-public class EmailValidatorException extends Exception{
+public class EmailValidateException extends Exception{
 
-    public EmailValidatorException(String message) {
+    public EmailValidateException(String message) {
         super(message);
     }
 

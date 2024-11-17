@@ -16,7 +16,7 @@ public class PersonValidatorMain {
             PersonValidator.isPasswordValid(password);
             System.out.println("Password is valid");
 
-        } catch (EmailValidatorException exception) {
+        } catch (EmailValidateException exception) {
 
             System.out.println("Email is not valid");
             System.out.println(exception.getMessage());

@@ -7,13 +7,11 @@ public class User {
     private String email;
     private String password;
     private Role role;
-    private boolean isBlocked;
 
     public User( String email, String password) {
         this.email = email;
         this.password = password;
         this.role = role;
-        this.isBlocked = false;
         this.userId = userIdCounter++;
     }
 
@@ -25,7 +23,6 @@ public class User {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", role=" + role +
-                ", isBlocked=" + isBlocked +
                 '}';
     }
 
@@ -62,13 +59,7 @@ public class User {
         this.role = role;
     }
 
-    public boolean isBlocked() {
-        return isBlocked;
-    }
 
-    public void setBlocked(boolean blocked) {
-        isBlocked = blocked;
-    }
 
 
 }
