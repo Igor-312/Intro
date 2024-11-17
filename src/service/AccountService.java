@@ -1,7 +1,10 @@
 package service;
 
 import models.Account;
+
 import repository.AccountRepoInterface;
+import java.util.List;
+import java.util.Map;
 
 import java.util.List;
 
@@ -14,17 +17,7 @@ public class AccountService implements AccountServiceInterface {
     public AccountService(AccountRepoInterface accountRepo) {
         this.accountRepo = accountRepo;
     }
-
-    // Создание нового аккаунта
-    @Override
-    public void createAccount(Account account) {
-        if (account != null && account.getBalance() >= 0) {
-            accountRepo.createAccount(account); // Используем метод репозитория
-        } else {
-            throw new IllegalArgumentException("Invalid account or balance");
-        }
-    }
-
+   
     // Получение аккаунта по ID
     @Override
     public Account getAccountById(int accountId) {
@@ -33,12 +26,6 @@ public class AccountService implements AccountServiceInterface {
             throw new IllegalArgumentException("Account not found with ID: " + accountId);
         }
         return account;
-    }
-
-    // Получение всех аккаунтов
-    @Override
-    public List<Account> getAllAccounts() {
-        return accountRepo.getAllAccount(); // Используем метод репозитория
     }
 
     // Пополнение баланса
@@ -73,5 +60,35 @@ public class AccountService implements AccountServiceInterface {
         } else {
             throw new IllegalArgumentException("Account not found with ID: " + accountId);
         }
+
+    @Override
+    public void createAccountUSD() {
+
+    }
+
+    @Override
+    public void createAccountEUR() {
+
+    }
+
+    @Override
+    public void createAccountBTC() {
+
+    }
+
+    @Override
+    public Map<Integer, List<Account>> showBalance(int accountID) {
+        return Map.of();
+    }
+
+    @Override
+    public void deleteAccount(int accountID) {
+
+    }
+
+    @Override
+    public Map<Integer, List<Account>> myAccounts() {
+        return Map.of();
+
     }
 }
