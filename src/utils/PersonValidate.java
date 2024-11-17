@@ -14,9 +14,10 @@ public class PersonValidate {
     }
 
     public void setEmail(String email) {
-
         if (isEmailValid(email)) {
             this.email = email;
+        } else {
+            throw new IllegalArgumentException("Invalid email format");
         }
     }
 
@@ -27,10 +28,12 @@ public class PersonValidate {
     public void setPassword(String password) {
         if (isPasswordValid(password)) {
             this.password = password;
+        } else {
+            throw new IllegalArgumentException("Invalid password format");
         }
     }
 
-    private boolean isEmailValid(String email) {
+    public boolean isEmailValid(String email) {
         int indexAt = email.indexOf('@');
 
         if (indexAt == -1 || indexAt != email.lastIndexOf('@')) return false;
@@ -61,10 +64,9 @@ public class PersonValidate {
         if (!Character.isAlphabetic(firstChar)) return false;
 
         return true;
-
     }
 
-    private boolean isPasswordValid(String password) {
+    public boolean isPasswordValid(String password) {
         if (password == null || password.length() < 8) {
             System.out.println("Password should be at least 8 characters");
             return false;
@@ -75,8 +77,6 @@ public class PersonValidate {
         boolean isLowerCase = false;
         boolean isSpecialSymbol = false;
 
-        boolean[] result = new boolean[4];
-
         String symbols = "!%$@&*()[].,-";
 
         for (int i = 0; i < password.length(); i++) {
@@ -86,14 +86,11 @@ public class PersonValidate {
             if (Character.isUpperCase(ch)) isUpperCase = true;
             if (Character.isLowerCase(ch)) isLowerCase = true;
             if (symbols.indexOf(ch) >= 0) isSpecialSymbol = true;
-
-
         }
 
         System.out.printf("%s | %s | %s | %s\n", isDigit, isUpperCase, isLowerCase, isSpecialSymbol);
 
         return isDigit && isUpperCase && isLowerCase && isSpecialSymbol;
-
     }
 
     @Override
@@ -104,4 +101,5 @@ public class PersonValidate {
                 '}';
     }
 }
+
 
