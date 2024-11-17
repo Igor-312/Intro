@@ -1,43 +1,38 @@
 package models;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 public class User {
-    private int id;
+
+    private static int userIdCounter = 0;
+    private int userId;
     private String email;
     private String password;
     private Role role;
-    private boolean isBlocked;
 
-    public User(int id, String email, String password, Role role) {
-        this.id = id;
+    public User( String email, String password) {
         this.email = email;
         this.password = password;
         this.role = role;
-        this.isBlocked = false;
+        this.userId = userIdCounter++;
     }
 
 
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "id=" + userId +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", role=" + role +
-                ", isBlocked=" + isBlocked +
                 '}';
     }
 
 
-    public int getId() {
-        return id;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setUserId(int id) {
+        this.userId = id;
     }
 
     public String getEmail() {
@@ -64,13 +59,7 @@ public class User {
         this.role = role;
     }
 
-    public boolean isBlocked() {
-        return isBlocked;
-    }
 
-    public void setBlocked(boolean blocked) {
-        isBlocked = blocked;
-    }
 
 
 }

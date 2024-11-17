@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AccountRepository {
+public class AccountRepository implements AccountRepoInterface {
     private Map<Integer, List<Account>> accounts = new HashMap<>();
     //integer = userID
 
