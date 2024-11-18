@@ -7,6 +7,7 @@ import models.ExchangeRate;
 import models.Transaction;
 import models.User;
 import service.CurrencyService;
+import utils.PersonValidate;
 
 
 import service.AccountService;
@@ -77,15 +78,29 @@ public class ConsoleView {
                 System.out.println("Type your password:");
                 String password1 = scanner.nextLine();
 
-                boolean user1 = userService.loginUser(email2, password1);
+                try {
+                    boolean user1 = userService.loginUser(email2, password1);
 
-                if (userService.isUserBlocked()){
-                    System.out.println("Login is not possible for blocked users. Please contact your manager");
-                    showLoginPage();
-                }
+                    if (userService.isUserBlocked()) {
+                        System.out.println("Login is not possible for blocked users. Please contact your manager");
+                        showLoginPage();
+                    }
 
-                if (user1 == true) {
-                    showHomePage();
+                    if (user1 == true) {
+                        showHomePage();
+                    }
+
+                }catch (EmailValidateException exception) {
+
+                    System.out.println("Email is not valid");
+                    System.out.println(exception.getMessage());
+                    System.out.println("Insert email");
+
+                } catch (PasswordValidatorException ex) {
+
+                    System.out.println("Password is not valid");
+                    System.out.println(ex.getMessage());
+                    System.out.println("Insert password");
                 }
 
                 waitRead();
@@ -100,21 +115,34 @@ public class ConsoleView {
                 System.out.println("Insert password:");
                 String password = scanner.nextLine();
 
-                User user = userService.registerUser(email, password);
+                try {
+                    User user = userService.registerUser(email, password);
 
-                if (user != null) {
-                    System.out.println("Registered successfully! Please Login!");
-                    showLoginPage();
-                } else {
-                    System.out.println("Registration failed.");
-                    showLoginPage();
+                    if (user != null) {
+                        System.out.println("Registered successfully! Please Login!");
+                        showLoginPage();
+                    } else {
+                        System.out.println("Registration failed.");
+                        showLoginPage();
+                    }
+
+                } catch (EmailValidateException exception) {
+
+                    System.out.println("Email is not valid");
+                    System.out.println(exception.getMessage());
+                    System.out.println("Insert email");
+
+                } catch (PasswordValidatorException ex) {
+
+                    System.out.println("Password is not valid");
+                    System.out.println(ex.getMessage());
+                    System.out.println("Insert password");
                 }
 
                 waitRead();
                 break;
 
             default:
-
                 System.out.println("\nIncorrect input, please enter a number!");
         }
     }
@@ -225,9 +253,6 @@ public class ConsoleView {
                 double amountOfMoney = scanner.nextDouble();
                 scanner.nextLine();
 
-                /*System.out.println("Select transaction type: ");
-                String transaction = scanner.nextLine();*/
-
                 transactionService.addMoney(accountID,amountOfMoney);
                 System.out.println("Money has been added");
 
@@ -296,7 +321,7 @@ public class ConsoleView {
             case 9:
 
                 System.out.println("Show currency exchange rates");
-                Map<String,String> exchangeRates = currencyService.showExchangeRates();
+                Map<String,Double> exchangeRates = currencyService.showExchangeRates();
                 System.out.println(exchangeRates);
 
                 waitRead();

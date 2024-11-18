@@ -1,5 +1,6 @@
 package service;
 
+import models.Account;
 import models.Role;
 import models.User;
 import repository.UserRepository;
@@ -7,6 +8,7 @@ import utils.PersonValidate;
 import utils.validatorExeptions.EmailValidateException;
 import utils.validatorExeptions.PasswordValidatorException;
 
+import java.util.List;
 import java.util.Map;
 
 public class UserService implements UserServiceInterface {
@@ -87,5 +89,10 @@ public class UserService implements UserServiceInterface {
     @Override
     public void logout() {
         activeUser = null;
+    }
+
+    @Override
+    public List<Account> getAccountsByUserId(int userId) {
+        return userRepository.getAccountsByUserId(userId);
     }
 }

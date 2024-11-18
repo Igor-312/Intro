@@ -1,10 +1,12 @@
 package service;
 
+import models.Account;
 import models.Role;
 import models.User;
 import utils.validatorExeptions.EmailValidateException;
 import utils.validatorExeptions.PasswordValidatorException;
 
+import java.util.List;
 import java.util.Map;
 
 public interface UserServiceInterface {
@@ -26,4 +28,6 @@ public interface UserServiceInterface {
     boolean isUserBlocked();
 
     void logout();
+
+    List<Account> getAccountsByUserId(int userId);
 }

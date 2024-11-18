@@ -3,16 +3,17 @@ package repository;
 import models.Account;
 import models.Transaction;
 import models.TypeTransaction;
+import service.UserService;
 
 import java.util.*;
 
 public class TransactionRepository implements TransactionRepoInterface {
 
     private final Map<Integer, List<Transaction>> transactionMap = new HashMap<>();
-    private UserRepoInterface userAccountRepo ;
+    private UserService userService;
 
     public TransactionRepository() {
-        this.userAccountRepo = userAccountRepo;
+        this.userService = userService;
     }
 
     @Override
@@ -49,7 +50,7 @@ public class TransactionRepository implements TransactionRepoInterface {
     @Override
     public Map<Integer, List<Transaction>> getTransactionsByUserId(int userId) {
         Map<Integer, List<Transaction>> userTransactions = new HashMap<>();
-        List<Account> userAccounts = userAccountRepo.getAccountsByUserId(userId);
+        List<Account> userAccounts = userService.getAccountsByUserId(userId);
 
         for (Account account : userAccounts) {
             int accountId = account.getAccountId();
