@@ -8,10 +8,10 @@ public class CurrencyRepo implements CurrencyRepoInterface {
 
     public CurrencyRepo() {
         this.exchangeRates = new HashMap<>();
-        // Инициализация с некоторыми базовыми курсами валют
+        // Инициализация с базовыми курсами валют
         this.exchangeRates.put("USD", 1.0); // Базовая валюта
         this.exchangeRates.put("EUR", 0.85);
-        this.exchangeRates.put("JPY", 110.0);
+        this.exchangeRates.put("BTC", 90000.0); // Цена 1 Bitcoin в USD
     }
 
     @Override
@@ -23,6 +23,9 @@ public class CurrencyRepo implements CurrencyRepoInterface {
     public void addOrUpdateExchangeRate(String currency, Double rate) {
         if (currency == null || rate == null || rate <= 0) {
             throw new IllegalArgumentException("Invalid currency or rate");
+        }
+        if (!exchangeRates.containsKey(currency)) {
+            throw new IllegalArgumentException("Currency not found");
         }
         exchangeRates.put(currency, rate);
     }
@@ -37,17 +40,5 @@ public class CurrencyRepo implements CurrencyRepoInterface {
             throw new IllegalArgumentException("Unsupported currency");
         }
         return rate;
-    }
-
-    public static void main(String[] args) {
-        CurrencyRepo repo = new CurrencyRepo();
-
-        System.out.println("Курсы валют: " + repo.getAllExchangeRates());
-
-        repo.addOrUpdateExchangeRate("EUR", 0.90);
-        System.out.println("Измененные курсы валют: " + repo.getAllExchangeRates());
-
-        double rate = repo.getExchangeRate("EUR");
-        System.out.println("Курс EUR: " + rate);
     }
 }
