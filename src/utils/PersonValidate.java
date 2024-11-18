@@ -21,6 +21,8 @@ public class PersonValidate {
 
         if (isEmailValid(email)) {
             this.email = email;
+        } else {
+            throw new IllegalArgumentException("Invalid email format");
         }
     }
 
@@ -31,6 +33,8 @@ public class PersonValidate {
     public void setPassword(String password) throws PasswordValidatorException {
         if (isPasswordValid(password)) {
             this.password = password;
+        } else {
+            throw new IllegalArgumentException("Invalid password format");
         }
     }
 
@@ -44,12 +48,10 @@ public class PersonValidate {
         int dotIndexAfterAt = email.indexOf('.', indexAt + 1);
         if (dotIndexAfterAt == -1) throw new EmailValidateException(". after @ error");
 
-
         // 3. После последней точки есть 2 или более символов
         // test@fazx.com.ne.t
         int lastDotIndex = email.lastIndexOf('.');
         if (lastDotIndex + 2 >= email.length()) throw new EmailValidateException("last . error");
-
         // 4.  Алфавит, цифры, '-', '_', '.', '@'
         /*
         Я беру каждый символ. Проверяю, что он не является "запрещенным"
@@ -72,20 +74,18 @@ public class PersonValidate {
 
         // 5. До собаки должен быть хотя бы 1 символ == собака не первая в строке. Т.е. ее индекс не равен 0
         if (indexAt == 0) throw new EmailValidateException("@ should not first");
-
         // 6. Первый символ - должна быть буква
         // Если 0-й символ НЕ является буквой, то email не подходит = return false;
         char firstChar = email.charAt(0);
         if (!Character.isAlphabetic(firstChar)) throw new EmailValidateException("first symbol should be alphabetic");
-
         return true;
-
     }
-
+  
     public static boolean isPasswordValid(String password) throws PasswordValidatorException {
         if (password == null || password.length() < 8) {
             System.out.println("Password should be at least 8 characters");
             throw new PasswordValidatorException("length error");
+
         }
 
         boolean isDigit = false;
@@ -115,8 +115,6 @@ public class PersonValidate {
         if (!isSpecialSymbol) throw new PasswordValidatorException("special symbol error");
 
         return isDigit && isUpperCase && isLowerCase && isSpecialSymbol;
-
     }
 
 }
-
