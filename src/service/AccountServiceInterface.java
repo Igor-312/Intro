@@ -16,7 +16,7 @@ public interface AccountServiceInterface {
 
     Map<Integer, List<Account>> myAccounts();
   
- // Получение аккаунта по ID
+    // Получение аккаунта по ID
     Account getAccountById(int accountId);
 
     // Пополнение баланса
@@ -25,4 +25,6 @@ public interface AccountServiceInterface {
     // Снятие средств
     void withdraw(int accountId, double amount);
 
+    // Удаление аккаунта
+    void deleteAccount(int accountId);
 }

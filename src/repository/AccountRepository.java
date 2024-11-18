@@ -9,16 +9,19 @@ import java.util.Map;
 
 public class AccountRepository implements AccountRepoInterface {
 
-    private Map<Integer, List<Account>> accounts = new HashMap<>();
-    //integer = userID
-
     // Хранилище аккаунтов (Map или List)
     private Map<Integer, Account> accounts = new HashMap<>();
 
     // Создать аккаунт
     @Override
     public void createAccount(Account account) {
-        accounts.put(account.getAccountId(), account); // Добавление в Map
+        // Проверка на существование аккаунта с таким ID
+        if (account != null && !accounts.containsKey(account.getAccountId())) {
+            accounts.put(account.getAccountId(), account); // Добавление аккаунта в Map
+        } else {
+            // Логирование или выбрасывание исключения, если аккаунт с таким ID уже существует
+            throw new IllegalArgumentException("Account with this ID already exists or account is null.");
+        }
     }
 
     // Получить аккаунт по ID
