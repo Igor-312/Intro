@@ -296,7 +296,7 @@ public class ConsoleView {
             case 9:
 
                 System.out.println("Show currency exchange rates");
-                Map<String,String> exchangeRates = currencyService.showExchangeRates();
+                Map<String, Double> exchangeRates = currencyService.showExchangeRates();
                 System.out.println(exchangeRates);
 
                 waitRead();
