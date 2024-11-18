@@ -1,10 +1,7 @@
 package repository;
 
-import models.Account;
-import models.Role;
-import models.User;
+import models.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -101,13 +98,13 @@ public class UserRepository implements UserRepoInterface{
         return userAccounts;
     }
 
-    public Account createAccountForUser(int userId, String accountType, double initialBalance) {
+    public Account createAccountForUser(int userId, CurrencyCode currency, double initialBalance) {
 
         User user = users.get(userId);
         if (user == null) {
             throw new IllegalArgumentException("User not found.");
         }
-        Account newAccount = accountRepository.createAccount(accountType,initialBalance);
+        Account newAccount = accountRepository.createAccount(currency,initialBalance);
         user.addUserAccount(newAccount);
         return newAccount;
     }

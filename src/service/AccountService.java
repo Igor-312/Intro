@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static models.CurrencyCode.*;
+
 public class AccountService implements AccountServiceInterface {
 
     // Репозиторий для работы с аккаунтами
@@ -66,22 +68,19 @@ public class AccountService implements AccountServiceInterface {
     // Создание аккаунта в USD
     @Override
     public void createAccountUSD() {
-        Account account = new Account(generateAccountId(), "USD", 0.0); // Инициализация с балансом 0
-        accountRepo.createAccount(account);
+        Account account = accountRepo.createAccount(USD, 0.0);
     }
 
     // Создание аккаунта в EUR
     @Override
     public void createAccountEUR() {
-        Account account = new Account(generateAccountId(), "EUR", 0.0); // Инициализация с балансом 0
-        accountRepo.createAccount(account);
+        Account account = accountRepo.createAccount(EUR, 0.0); // Инициализация с балансом 0
     }
 
     // Создание аккаунта в BTC
     @Override
     public void createAccountBTC() {
-        Account account = new Account(generateAccountId(), "BTC", 0.0); // Инициализация с балансом 0
-        accountRepo.createAccount(account);
+        Account account = accountRepo.createAccount(BTC, 0.0);
     }
 
     // Метод для генерации уникального ID аккаунта

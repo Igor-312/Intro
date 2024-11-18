@@ -1,6 +1,8 @@
 package repository;
 
 import models.Account;
+import models.Currency;
+import models.CurrencyCode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,10 +13,14 @@ public class AccountRepository implements AccountRepoInterface {
 
     // Хранилище аккаунтов (Map или List)
     private Map<Integer, Account> accounts = new HashMap<>();
+    private Currency currency;
 
     // Создать аккаунт
     @Override
-    public void createAccount(Account account) {
+    public Account createAccount(CurrencyCode currency, double initialBalance) {
+
+        Account account = new Account(currency, initialBalance);
+
         // Проверка на существование аккаунта с таким ID
         if (account != null && !accounts.containsKey(account.getAccountId())) {
             accounts.put(account.getAccountId(), account); // Добавление аккаунта в Map
@@ -22,6 +28,7 @@ public class AccountRepository implements AccountRepoInterface {
             // Логирование или выбрасывание исключения, если аккаунт с таким ID уже существует
             throw new IllegalArgumentException("Account with this ID already exists or account is null.");
         }
+        return account;
     }
 
     // Получить аккаунт по ID

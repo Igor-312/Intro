@@ -1,13 +1,14 @@
 package repository;
 
 import models.Account;
+import models.CurrencyCode;
 
 import java.util.List;
 
 public interface AccountRepoInterface {
 
     // Создание нового аккаунта
-    void createAccount(Account account);
+    Account createAccount(CurrencyCode currency, double initialBalance);
 
     // Получение аккаунта по ID
     Account getAccountById(int accountId);

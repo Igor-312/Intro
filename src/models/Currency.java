@@ -1,16 +1,17 @@
 package models;
 
 public class Currency {
-    private final String code;
+    private final CurrencyCode currencyCode;
     private String name;
 
-    public Currency(String code, String name) {
-        this.code = code;
+    public Currency(String currencyCode, String name) {
+        this.currencyCode = CurrencyCode.valueOf(currencyCode);
+
         this.name = name;
     }
 
-    public String getCode() {
-        return code;
+    public CurrencyCode getCode() {
+        return currencyCode;
     }
 
     public String getName() {
