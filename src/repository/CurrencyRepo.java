@@ -16,7 +16,7 @@ public class CurrencyRepo implements CurrencyRepoInterface {
 
     @Override
     public Map<String, Double> getAllExchangeRates() {
-        return new HashMap<>(exchangeRates); // Возвращаем копию курсов валют
+        return exchangeRates; // Возвращаем оригинальную карту курсов валют
     }
 
     @Override
