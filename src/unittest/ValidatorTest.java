@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import utils.PersonValidate;
+import utils.validatorExeptions.EmailValidateException;
+import utils.validatorExeptions.PasswordValidatorException;
 
 
 import java.util.stream.Stream;
@@ -17,12 +19,12 @@ public class ValidatorTest {
     String startPassword = "Neshyna100%";
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws EmailValidateException, PasswordValidatorException {
         testUser = new PersonValidate(startEmail,startPassword);
     }
 
     @Test
-    void testValidEmailSet() {
+    void testValidEmailSet() throws EmailValidateException {
         String validEmail = "Valid123@test.com";
         testUser.setEmail(validEmail);
         assertEquals(validEmail, testUser.getEmail());
@@ -30,7 +32,7 @@ public class ValidatorTest {
 
     @ParameterizedTest
     @MethodSource("invalidEmailData")
-    void testInvalidEmailSet(String invalidEmail) {
+    void testInvalidEmailSet(String invalidEmail) throws EmailValidateException {
         testUser.setEmail(invalidEmail);
         assertNotEquals(invalidEmail, testUser.getEmail());
         assertEquals(startEmail, testUser.getEmail());
@@ -50,7 +52,7 @@ public class ValidatorTest {
     }
 
     @Test
-    void testValidPasswordSet() {
+    void testValidPasswordSet() throws PasswordValidatorException {
         String validPassword = "Test_123";
         testUser.setPassword(validPassword);
         assertEquals(validPassword, testUser.getPassword());
@@ -58,7 +60,7 @@ public class ValidatorTest {
 
     @ParameterizedTest
     @MethodSource("invalidPassword")
-    void testInvalidPassword(String invalidPassword) {
+    void testInvalidPassword(String invalidPassword) throws PasswordValidatorException {
         testUser.setPassword(invalidPassword);
         assertEquals(startPassword, testUser.getPassword());
         assertNotEquals(invalidPassword, testUser.getPassword());

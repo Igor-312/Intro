@@ -17,12 +17,12 @@ public class TransactionService implements TransactionServiceInterface {
 
     private final TransactionRepository transactionRepository;
 
-    public TransactionService(TransactionRepository transactionRepository) {
-        this.transactionRepository = transactionRepository;
+    public TransactionService() {
+        this.transactionRepository = new TransactionRepository();
     }
 
     @Override
-    public void addMoney(int accountID, double amountOfMoney, Transaction transaction) {
+    public void addMoney(int accountID, double amountOfMoney) {
         if (amountOfMoney <= 0) {
             System.out.println("The amount of money must be greater than zero.");
             return;

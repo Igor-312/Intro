@@ -1,14 +1,22 @@
 package repository;
 
+import models.Account;
 import models.Role;
 import models.User;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class UserRepository implements UserRepoInterface{
     private static Map<Integer, User> users = new HashMap<>();
     private static int userIdCounter = 1;
+    private AccountRepository accountRepository;
+
+    public UserRepository() {
+        this.accountRepository = new AccountRepository();
+    }
 
     public void addDefaultUsers(){
         users.put(1, new User("Masha123@gmail.com", "Masha123@gmail.com"));
@@ -72,10 +80,35 @@ public class UserRepository implements UserRepoInterface{
         return users.values().stream()
                 .filter(user -> user.getUserId() == (userId))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("User is not found."));
+                .orElseThrow(() -> new IllegalArgumentException("User not found."));
     }
 
     public Map<Integer, User> allUsers() {
         return users;
+    }
+
+    @Override
+    public List<Account> getAccountsByUserId(int userId) {
+        List<Account> userAccounts = users.values().stream()
+                .filter(user -> user.getUserId() == userId)
+                .map(user -> user.getUserAccounts())
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("User not found."));
+
+        if (userAccounts == null) {
+            throw new IllegalStateException("The list of user accounts is null");
+        }
+        return userAccounts;
+    }
+
+    public Account createAccountForUser(int userId, String accountType, double initialBalance) {
+
+        User user = users.get(userId);
+        if (user == null) {
+            throw new IllegalArgumentException("User not found.");
+        }
+        Account newAccount = accountRepository.createAccount(accountType,initialBalance);
+        user.addUserAccount(newAccount);
+        return newAccount;
     }
 }

@@ -2,6 +2,8 @@ package service;
 
 import models.Role;
 import models.User;
+import utils.validatorExeptions.EmailValidateException;
+import utils.validatorExeptions.PasswordValidatorException;
 
 import java.util.Map;
 
@@ -17,9 +19,11 @@ public interface UserServiceInterface {
 
     boolean loginUser(String email, String password);
 
-    User registerUser(String email, String password);
+    User registerUser(String email, String password) throws EmailValidateException, PasswordValidatorException;
 
     boolean isUserAdmin();
+
+    boolean isUserBlocked();
 
     void logout();
 }

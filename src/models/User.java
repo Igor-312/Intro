@@ -1,5 +1,8 @@
 package models;
 
+import java.util.List;
+import java.util.Objects;
+
 public class User {
 
     private static int userIdCounter = 0;
@@ -8,24 +11,26 @@ public class User {
     private String password;
     private Role role;
 
-    public User( String email, String password) {
+    private List<Account> userAccounts;
+
+    public User(String email, String password) {
         this.email = email;
         this.password = password;
+        this.userAccounts = userAccounts;
         this.role = role;
         this.userId = userIdCounter++;
     }
 
-
     @Override
     public String toString() {
         return "User{" +
-                "id=" + userId +
+                "userId=" + userId +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", role=" + role +
+                ", userAccounts=" + userAccounts +
                 '}';
     }
-
 
     public int getUserId() {
         return userId;
@@ -59,7 +64,24 @@ public class User {
         this.role = role;
     }
 
+    public List<Account> getUserAccounts() {
+        return userAccounts;
+    }
 
+    public void addUserAccount(Account accounts) {
+        this.userAccounts.add(accounts);
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return userId == user.userId && Objects.equals(email, user.email) && Objects.equals(password, user.password) && role == user.role && Objects.equals(userAccounts, user.userAccounts);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId, email, password, role, userAccounts);
+    }
 }
