@@ -51,4 +51,7 @@ public class AccountRepository implements AccountRepoInterface {
         accounts.remove(accountId); // Удаление из Map
     }
 
+    public Account createAccount(String accountType, double initialBalance) {
+        return null;
+    }
 }

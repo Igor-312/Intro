@@ -11,21 +11,22 @@ import java.util.Map;
 
 public class UserService implements UserServiceInterface {
 
-    private static UserRepository userRepository;
+    private final UserRepository userRepository;  // Используем final, чтобы подчеркнуть неизменяемость
     private User activeUser;
-    private static User user;
     private static PersonValidate personValidator;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public Map<Integer, User> allUsers() {
-        Map<Integer,User> allUsers = userRepository.allUsers();
-        return allUsers;
+        return userRepository.allUsers();
     }
 
     @Override
     public void giveAdminPermissions(int userId) {
         userRepository.giveAdminPermissions(userId);
-        userRepository.giveAdminPermissions(2);//default test user
     }
 
     @Override
@@ -35,21 +36,26 @@ public class UserService implements UserServiceInterface {
 
     @Override
     public User findUser(int userId) {
-        User user = userRepository.findUser(userId);
-        return user;
+        return userRepository.findUser(userId);
     }
 
     @Override
     public boolean loginUser(String email, String password) {
-        User user = userRepository.getUserEmail(email);
-        if (user == null || !user.getPassword().equals(password)) {
+        try {
+            User user = userRepository.getUserEmail(email);
+            if (user == null || !user.getPassword().equals(password)) {
+                System.out.println("Invalid email or password.");
+                return false;
+            }
+            activeUser = user;
+            System.out.println("User is successfully logged in.");
+            return true;
+        } catch (IllegalArgumentException e) {
             System.out.println("Invalid email or password.");
             return false;
         }
-        activeUser = user;
-        System.out.println("User is successfully logged in.");
-        return true;
     }
+
 
     @Override
     public User registerUser(String email, String password) throws EmailValidateException, PasswordValidatorException {
@@ -70,22 +76,21 @@ public class UserService implements UserServiceInterface {
 
     @Override
     public boolean isUserAdmin() {
-        if (activeUser.getRole() != Role.ADMIN) {
-            return false;
-        }
-        return true;
+        return activeUser.getRole() == Role.ADMIN;
     }
 
     @Override
     public boolean isUserBlocked() {
-        if (activeUser.getRole() != Role.BLOCKED) {
-            return false;
-        }
-        return true;
+        return activeUser.getRole() == Role.BLOCKED;
     }
 
     @Override
     public void logout() {
         activeUser = null;
+    }
+
+    // Метод для установки activeUser в тестах
+    public void setActiveUser(User user) {
+        this.activeUser = user;
     }
 }

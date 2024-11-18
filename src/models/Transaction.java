@@ -11,13 +11,21 @@ public class Transaction {
     private final Currency currency;
     private int userId;
 
-
     public Transaction(int transactionId, int accountId, double amount, LocalDateTime date, Currency currency) {
         this.transactionId = transactionId;
         this.accountId = accountId;
         this.amount = amount;
         this.date = date;
         this.currency = currency;
+    }
+
+    public Transaction(int transactionId, int accountId, double amount, LocalDateTime date, Currency currency, int userId) {
+        this.transactionId = transactionId;
+        this.accountId = accountId;
+        this.amount = amount;
+        this.date = date;
+        this.currency = currency;
+        this.userId = userId;
     }
 
     @Override
@@ -29,13 +37,13 @@ public class Transaction {
                 ", amount=" + amount +
                 ", date=" + date +
                 ", currency=" + currency +
+                ", userId=" + userId +
                 '}';
     }
 
     public int getTransactionId() {
         return transactionId;
     }
-
 
     public int getAccountId() {
         return accountId;
