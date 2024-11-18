@@ -13,6 +13,8 @@ import service.AccountService;
 import service.TransactionService;
 import service.UserService;
 import service.CurrencyService;
+import utils.validatorExeptions.EmailValidateException;
+import utils.validatorExeptions.PasswordValidatorException;
 
 
 import java.time.LocalDateTime;
@@ -39,11 +41,11 @@ public class ConsoleView {
         scanner.nextLine();
     }
 
-    public void run(){
+    public void run() throws EmailValidateException, PasswordValidatorException {
         showLoginPage();
     }
 
-    private void showLoginPage() {
+    private void showLoginPage() throws EmailValidateException, PasswordValidatorException {
         while (true) {
 
             System.out.println("Welcome!");
@@ -63,7 +65,7 @@ public class ConsoleView {
         }
     }
 
-    private void handleLoginPageChoice(int input) {
+    private void handleLoginPageChoice(int input) throws EmailValidateException, PasswordValidatorException {
         switch (input) {
             case 1:
                 //authorization
@@ -223,6 +225,9 @@ public class ConsoleView {
                 double amountOfMoney = scanner.nextDouble();
                 scanner.nextLine();
 
+                /*System.out.println("Select transaction type: ");
+                String transaction = scanner.nextLine();*/
+
                 transactionService.addMoney(accountID,amountOfMoney);
                 System.out.println("Money has been added");
 
@@ -240,7 +245,7 @@ public class ConsoleView {
                 amountOfMoney = scanner.nextDouble();
                 scanner.nextLine();
 
-                transactionService.withdrawMoney();
+                transactionService.withdrawMoney(accountID,amountOfMoney);
                 System.out.println("Money has been withdrawn");
 
                 waitRead();

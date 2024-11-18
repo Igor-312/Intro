@@ -4,6 +4,8 @@ import models.Role;
 import models.User;
 import repository.UserRepository;
 import utils.PersonValidate;
+import utils.validatorExeptions.EmailValidateException;
+import utils.validatorExeptions.PasswordValidatorException;
 
 import java.util.Map;
 
@@ -50,7 +52,7 @@ public class UserService implements UserServiceInterface {
     }
 
     @Override
-    public User registerUser(String email, String password) {
+    public User registerUser(String email, String password) throws EmailValidateException, PasswordValidatorException {
         if (!personValidator.isEmailValid(email)) {
             System.out.println("Please check the email.");
             return null;
@@ -60,7 +62,7 @@ public class UserService implements UserServiceInterface {
             return null;
         }
         if (userRepository.isMailExist(email)) {
-            System.out.println("Email is already exist.");
+            System.out.println("Email already exist.");
             return null;
         }
         return userRepository.addUser(email, password);
