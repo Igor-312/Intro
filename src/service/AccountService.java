@@ -14,7 +14,7 @@ public class AccountService implements AccountServiceInterface {
     private AccountRepoInterface accountRepo;
 
     // Конструктор, принимающий репозиторий
-    public AccountService() {
+    public AccountService(AccountRepoInterface accountRepo) {
         this.accountRepo = accountRepo;
     }
 
@@ -84,8 +84,10 @@ public class AccountService implements AccountServiceInterface {
     }
 
     // Метод для генерации уникального ID аккаунта
+    private static int accountIdCounter = 1; // Статический счетчик для уникальных ID
+
     private int generateAccountId() {
-        return (int) (Math.random() * 100000); // Простой генератор ID, можно улучшить
+        return accountIdCounter++; // Генерация уникального ID с инкрементом
     }
 
     // Показать баланс для аккаунта
