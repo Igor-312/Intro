@@ -7,10 +7,9 @@ import java.util.Map;
 
 public interface TransactionServiceInterface {
 
-    void addMoney(int accountID, double amountOfMoney, Transaction transaction);
+    void addMoney(int accountID, double amountOfMoney);
 
     void withdrawMoney(int accountID, double amountOfMoney);
-
 
     void exchangeMoney(double amountOfMoney, String currencyFrom, String currencyTo);
 

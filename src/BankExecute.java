@@ -2,10 +2,12 @@ import service.AccountService;
 import service.CurrencyService;
 import service.TransactionService;
 import service.UserService;
+import utils.validatorExeptions.EmailValidateException;
+import utils.validatorExeptions.PasswordValidatorException;
 import view.ConsoleView;
 
 public class BankExecute {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws EmailValidateException, PasswordValidatorException {
         UserService userService = new UserService();
         AccountService accountService = new AccountService();
         CurrencyService currencyService = new CurrencyService();

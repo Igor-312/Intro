@@ -9,9 +9,9 @@ import java.util.*;
 public class TransactionRepository implements TransactionRepoInterface {
 
     private final Map<Integer, List<Transaction>> transactionMap = new HashMap<>();
-    private final UserRepoInterface userAccountRepo;
+    private UserRepoInterface userAccountRepo ;
 
-    public TransactionRepository(UserRepoInterface userAccountRepo) {
+    public TransactionRepository() {
         this.userAccountRepo = userAccountRepo;
     }
 
