@@ -12,7 +12,7 @@ public class UserRepository implements UserRepoInterface{
     private AccountRepository accountRepository;
 
     public UserRepository() {
-        this.accountRepository = new AccountRepository();
+        this.accountRepository = accountRepository;
     }
 
     public void addDefaultUsers(){
@@ -31,12 +31,9 @@ public class UserRepository implements UserRepoInterface{
     }
 
     public boolean isMailExist(String email) {
-       if (users.values().stream()
+       return users.values().stream()
                 .map(User::getEmail)
-                .allMatch(existEmail -> existEmail.equals(email))){
-        return true;
-       }
-       return false;
+                .anyMatch(existEmail -> existEmail.equals(email));
     }
 
     public User getUserEmail(String email) {

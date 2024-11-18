@@ -21,6 +21,7 @@ import utils.validatorExeptions.PasswordValidatorException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class ConsoleView {
@@ -78,33 +79,21 @@ public class ConsoleView {
                 System.out.println("Type your password:");
                 String password1 = scanner.nextLine();
 
-                try {
-                    boolean user1 = userService.loginUser(email2, password1);
+                boolean user1 = userService.loginUser(email2, password1);
 
-                    if (userService.isUserBlocked()) {
-                        System.out.println("Login is not possible for blocked users. Please contact your manager");
-                        showLoginPage();
-                    }
+                if (userService.isUserBlocked()) {
+                    System.out.println("Login is not possible for blocked users. Please contact your manager");
+                    showLoginPage();
+                }
 
-                    if (user1 == true) {
-                        showHomePage();
-                    }
-
-                }catch (EmailValidateException exception) {
-
-                    System.out.println("Email is not valid");
-                    System.out.println(exception.getMessage());
-                    System.out.println("Insert email");
-
-                } catch (PasswordValidatorException ex) {
-
-                    System.out.println("Password is not valid");
-                    System.out.println(ex.getMessage());
-                    System.out.println("Insert password");
+                if (user1 == true) {
+                    showHomePage();
                 }
 
                 waitRead();
                 break;
+
+
             case 2:
                 //registration
 
@@ -112,32 +101,39 @@ public class ConsoleView {
 
                 System.out.println("Insert email:");
                 String email = scanner.nextLine();
-                System.out.println("Insert password:");
+                System.out.println("Insert password: ");
                 String password = scanner.nextLine();
 
-                try {
-                    User user = userService.registerUser(email, password);
+                Optional<User> optionalUser = Optional.empty();
 
-                    if (user != null) {
-                        System.out.println("Registered successfully! Please Login!");
-                        showLoginPage();
-                    } else {
-                        System.out.println("Registration failed.");
-                        showLoginPage();
-                    }
+                try {
+                    optionalUser = userService.registerUser(email, password);
 
                 } catch (EmailValidateException exception) {
 
                     System.out.println("Email is not valid");
-                    System.out.println(exception.getMessage());
                     System.out.println("Insert email");
+                    System.out.println(exception.getMessage());
+                    return;
 
                 } catch (PasswordValidatorException ex) {
 
                     System.out.println("Password is not valid");
-                    System.out.println(ex.getMessage());
                     System.out.println("Insert password");
+                    System.out.println(ex.getMessage());
+                    return;
                 }
+
+                if (optionalUser.isPresent()) {
+                    System.out.println("Registered successfully! Please Login!");
+                    showLoginPage();
+                } else {
+                    System.out.println("Registration failed.");
+                    showLoginPage();
+                }
+
+                User user = optionalUser.get();
+                System.out.println("User" + user.getEmail() + "is registered");
 
                 waitRead();
                 break;
