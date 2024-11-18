@@ -3,6 +3,7 @@ package service;
 import models.Account;
 
 import repository.AccountRepoInterface;
+import repository.AccountRepository;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,8 +15,8 @@ public class AccountService implements AccountServiceInterface {
     private AccountRepoInterface accountRepo;
 
     // Конструктор, принимающий репозиторий
-    public AccountService(AccountRepoInterface accountRepo) {
-        this.accountRepo = accountRepo;
+    public AccountService() {
+        this.accountRepo = new AccountRepository();
     }
 
     // Получение аккаунта по ID
