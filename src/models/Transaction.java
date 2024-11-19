@@ -10,6 +10,7 @@ public class Transaction {
     private final LocalDateTime date;
     private final Currency currency;
     private int userId;
+    private Enum CurrencyCode;
 
 
     public Transaction(int transactionId, int accountId, double amount, LocalDateTime date, Currency currency) {

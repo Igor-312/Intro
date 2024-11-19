@@ -19,12 +19,19 @@ public class CurrencyService implements CurrencyServiceInterface {
 
     @Override
     public void changeCurrencyRate(String currency, Double rate) {
+        if (rate <= 0) {
+            throw new IllegalArgumentException("Rate must be greater than zero");
+        }
         currencyRepo.addOrUpdateExchangeRate(currency, rate);
     }
 
     @Override
     public Double getExchangeRate(String currency) {
-        return currencyRepo.getExchangeRate(currency);
+        Double rate = currencyRepo.getExchangeRate(currency);
+        if (rate == null || rate <= 0) {
+            throw new IllegalArgumentException("Invalid or unsupported currency: " + currency);
+        }
+        return rate;
     }
 
     @Override
@@ -32,12 +39,8 @@ public class CurrencyService implements CurrencyServiceInterface {
         if (fromCurrency == null || toCurrency == null || amount <= 0) {
             throw new IllegalArgumentException("Invalid currency or amount");
         }
-        Double fromRate = currencyRepo.getExchangeRate(fromCurrency);
-        Double toRate = currencyRepo.getExchangeRate(toCurrency);
-
-        if (fromRate == null || toRate == null) {
-            throw new IllegalArgumentException("Unsupported currency");
-        }
+        Double fromRate = getExchangeRate(fromCurrency);
+        Double toRate = getExchangeRate(toCurrency);
 
         return amount * (toRate / fromRate);
     }
