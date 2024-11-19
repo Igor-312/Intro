@@ -25,6 +25,15 @@ public class AccountRepository implements AccountRepoInterface {
         this.userService = new UserService();
     }
 
+    // Возвращает баланс по ID аккаунта
+    public double getAccountBalance(int accountId) { // Нужен в TransactionService для метода withdrawMoney чтоб получить тек.баланс счета
+        Account account = accounts.get(accountId);
+        if (account != null) {
+            return account.getBalance();  // Получение баланса у аккаунта
+        }
+        throw new IllegalArgumentException("Account not found.");
+    }
+
     // Создать аккаунт
     @Override
     public Account createAccount(CurrencyCode currency, double initialBalance) {
@@ -69,11 +78,13 @@ public class AccountRepository implements AccountRepoInterface {
 
     // Пополнение баланса
     @Override
-    public void updateAccountBalance(int accountId, double amount) {
+    public boolean updateAccountBalance(int accountId, double amount) {
         Account account = getAccountById(accountId);
         if (account != null) {
-            account.setBalance(account.getBalance() + amount); // Обновление баланса
+            account.setBalance(account.getBalance() + amount);
+            return true;
         }
+        return false;
     }
 
     // Удалить аккаунт
