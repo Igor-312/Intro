@@ -1,5 +1,6 @@
 package service;
 
+import models.CurrencyCode;
 import models.Transaction;
 
 import java.util.List;
@@ -11,7 +12,7 @@ public interface TransactionServiceInterface {
 
     void withdrawMoney(int accountID, double amountOfMoney);
 
-    void exchangeMoney(double amountOfMoney, String currencyFrom, String currencyTo);
+    void exchangeMoney(double amountOfMoney, CurrencyCode currencyFrom, CurrencyCode currencyTo);
 
     Map<Integer, List<Transaction>> showHistory();
 

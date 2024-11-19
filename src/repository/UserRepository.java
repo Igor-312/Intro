@@ -1,27 +1,33 @@
 package repository;
 
-import models.Account;
-import models.Role;
-import models.User;
+import models.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class UserRepository implements UserRepoInterface{
-    private static Map<Integer, User> users = new HashMap<>();
+    public static Map<Integer, User> users = new HashMap<>();
     private static int userIdCounter = 1;
     private AccountRepository accountRepository;
 
     public UserRepository() {
-        this.accountRepository = new AccountRepository();
+        this.accountRepository = accountRepository;
+        addDefaultUsers();
+        addTestAdmin();
+
     }
 
     public void addDefaultUsers(){
-        users.put(1, new User("Masha123@gmail.com", "Masha123@gmail.com"));
-        users.put(2, new User("Neshyna123@gmail.com", "Neshyna123@gmail.com"));
+        users.put(1, new User("Masha123@gmail.com", "Masha123@gmail.com"));//id 0
     }
+
+    public void addTestAdmin(){
+        User admin = new User("Neshyna123@gmail.com", "Neshyna123@gmail.com");//id 1
+        admin.setRole(Role.ADMIN);
+        users.put(2,admin);
+    }
+
 
     public User addUser(String email, String password){
 
@@ -34,12 +40,9 @@ public class UserRepository implements UserRepoInterface{
     }
 
     public boolean isMailExist(String email) {
-       if (users.values().stream()
+       return users.values().stream()
                 .map(User::getEmail)
-                .allMatch(existEmail -> existEmail.equals(email))){
-        return true;
-       }
-       return false;
+                .anyMatch(existEmail -> existEmail.equals(email));
     }
 
     public User getUserEmail(String email) {
@@ -101,13 +104,13 @@ public class UserRepository implements UserRepoInterface{
         return userAccounts;
     }
 
-    public Account createAccountForUser(int userId, String accountType, double initialBalance) {
+    public Account createAccountForUser(int userId, CurrencyCode currency, double initialBalance) {
 
         User user = users.get(userId);
         if (user == null) {
             throw new IllegalArgumentException("User not found.");
         }
-        Account newAccount = accountRepository.createAccount(accountType,initialBalance);
+        Account newAccount = accountRepository.createAccount(currency,initialBalance);
         user.addUserAccount(newAccount);
         return newAccount;
     }

@@ -3,16 +3,17 @@ package repository;
 import models.Account;
 import models.Transaction;
 import models.TypeTransaction;
+import service.UserService;
 
 import java.util.*;
 
 public class TransactionRepository implements TransactionRepoInterface {
 
     private final Map<Integer, List<Transaction>> transactionMap = new HashMap<>();
-    private UserRepoInterface userAccountRepo ;
+    private UserService userService;
 
     public TransactionRepository() {
-        this.userAccountRepo = userAccountRepo;
+        this.userService = userService;
     }
 
     @Override
@@ -38,7 +39,7 @@ public class TransactionRepository implements TransactionRepoInterface {
         return transactionMap.get(accountId);
     }
 
-    @Override
+   @Override
     public List<Transaction> getTransactionsByType(Enum type) {
 
         if (type == null) {
@@ -68,7 +69,7 @@ public class TransactionRepository implements TransactionRepoInterface {
         }
 
         Map<Integer, List<Transaction>> userTransactions = new HashMap<>();
-        List<Account> userAccounts = userAccountRepo.getAccountsByUserId(userId);
+        List<Account> userAccounts = userService.getAccountsByUserId(userId);
 
         if (userAccounts.isEmpty()) {
             throw new IllegalArgumentException("No accounts found for the provided user ID.");

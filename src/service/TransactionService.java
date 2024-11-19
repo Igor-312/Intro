@@ -1,21 +1,25 @@
 package service;
 import models.Currency;
+import models.CurrencyCode;
 import models.Transaction;
 import models.TypeTransaction;
 import repository.AccountRepository;
 import repository.TransactionRepository;
-import service.TransactionServiceInterface;
 
 
 import java.time.LocalDateTime;
+
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import java.util.stream.Collectors;
 
 import java.util.List;
 import java.util.Map;
+
+import static models.CurrencyCode.USD;
 
 public class TransactionService implements TransactionServiceInterface {
 
@@ -37,7 +41,7 @@ public class TransactionService implements TransactionServiceInterface {
                 accountID,
                 amountOfMoney,
                 LocalDateTime.now(),
-                new Currency("USD", "US Dollar")
+                new Currency(USD, "US Dollar")
         );
 
         // Добавление транзакции в репозиторий
@@ -64,7 +68,7 @@ public class TransactionService implements TransactionServiceInterface {
                 accountID,
                 -amountOfMoney, // Отрицательное значение для снятия
                 LocalDateTime.now(),
-                new Currency("USD", "Доллар США")
+                new Currency(USD, "Доллар США")
         );
 
         // Добавление транзакции в репозиторий
@@ -91,7 +95,7 @@ public class TransactionService implements TransactionServiceInterface {
     }
 
     @Override
-    public void exchangeMoney(double amountOfMoney, String currencyFrom, String currencyTo) {
+    public void exchangeMoney(double amountOfMoney, CurrencyCode currencyFrom, CurrencyCode currencyTo) {
 
         if (amountOfMoney <= 0) {
             throw new IllegalArgumentException("The amount of money must be greater than zero.");

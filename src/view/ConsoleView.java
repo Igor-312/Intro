@@ -1,12 +1,9 @@
 package view;
 
-import models.Account;
+import models.*;
 
-import models.Currency;
-import models.ExchangeRate;
-import models.Transaction;
-import models.User;
 import service.CurrencyService;
+import utils.PersonValidate;
 
 
 import service.AccountService;
@@ -20,6 +17,7 @@ import utils.validatorExeptions.PasswordValidatorException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class ConsoleView {
@@ -79,7 +77,7 @@ public class ConsoleView {
 
                 boolean user1 = userService.loginUser(email2, password1);
 
-                if (userService.isUserBlocked()){
+                if (userService.isUserBlocked()) {
                     System.out.println("Login is not possible for blocked users. Please contact your manager");
                     showLoginPage();
                 }
@@ -90,6 +88,8 @@ public class ConsoleView {
 
                 waitRead();
                 break;
+
+
             case 2:
                 //registration
 
@@ -97,12 +97,30 @@ public class ConsoleView {
 
                 System.out.println("Insert email:");
                 String email = scanner.nextLine();
-                System.out.println("Insert password:");
+                System.out.println("Insert password: ");
                 String password = scanner.nextLine();
 
-                User user = userService.registerUser(email, password);
+                Optional<User> optionalUser = Optional.empty();
 
-                if (user != null) {
+                try {
+                    optionalUser = userService.registerUser(email, password);
+
+                } catch (EmailValidateException exception) {
+
+                    System.out.println("Email is not valid");
+                    System.out.println("Insert email");
+                    System.out.println(exception.getMessage());
+                    return;
+
+                } catch (PasswordValidatorException ex) {
+
+                    System.out.println("Password is not valid");
+                    System.out.println("Insert password");
+                    System.out.println(ex.getMessage());
+                    return;
+                }
+
+                if (optionalUser.isPresent()) {
                     System.out.println("Registered successfully! Please Login!");
                     showLoginPage();
                 } else {
@@ -110,11 +128,13 @@ public class ConsoleView {
                     showLoginPage();
                 }
 
+                User user = optionalUser.get();
+                System.out.println("User" + user.getEmail() + "is registered");
+
                 waitRead();
                 break;
 
             default:
-
                 System.out.println("\nIncorrect input, please enter a number!");
         }
     }
@@ -149,6 +169,7 @@ public class ConsoleView {
                     showAdminMenu();
                 }else{
                     System.out.println("Admin menu is available only for admin.");
+                    showHomePage();
                 }
                 break;
             case 3:
@@ -225,9 +246,6 @@ public class ConsoleView {
                 double amountOfMoney = scanner.nextDouble();
                 scanner.nextLine();
 
-                /*System.out.println("Select transaction type: ");
-                String transaction = scanner.nextLine();*/
-
                 transactionService.addMoney(accountID,amountOfMoney);
                 System.out.println("Money has been added");
 
@@ -257,14 +275,16 @@ public class ConsoleView {
 
                 System.out.println("Amount of money to exchange:");
                 amountOfMoney = scanner.nextDouble();
+                scanner.nextLine();
 
                 System.out.println("Currency (from): ");
-                String currencyFrom = scanner.nextLine();
+                CurrencyCode currencyFrom = CurrencyCode.valueOf(scanner.nextLine());
+                scanner.nextLine();
 
                 System.out.println("Currency (to): ");
                 String currencyTo = scanner.nextLine();
 
-                transactionService.exchangeMoney(amountOfMoney,currencyFrom,currencyTo);
+                transactionService.exchangeMoney(amountOfMoney,currencyFrom, CurrencyCode.valueOf(currencyTo));
                 System.out.println("Money has been exchanged");
 
                 waitRead();
@@ -296,7 +316,7 @@ public class ConsoleView {
             case 9:
 
                 System.out.println("Show currency exchange rates");
-                Map<String,String> exchangeRates = currencyService.showExchangeRates();
+                Map<String,Double> exchangeRates = currencyService.showExchangeRates();
                 System.out.println(exchangeRates);
 
                 waitRead();
@@ -334,7 +354,7 @@ public class ConsoleView {
         while (true) {
 
             System.out.println("Admin menu:");
-            System.out.println("1. Change currency exchange rates");
+            System.out.println("1. Change convert currency rates");
             System.out.println("2. Give admin permissions");
             System.out.println("3. Block user");//bitcoin
             System.out.println("4. Find user");
@@ -349,7 +369,7 @@ public class ConsoleView {
 
             if (input == 0) break;
 
-            handleUserMenuChoice(input);
+            handleAdminMenuChoice(input);
         }
     }
 
@@ -357,7 +377,7 @@ public class ConsoleView {
         switch (input) {
             case 1:
 
-                System.out.println("Change currency exchange rates");
+                System.out.println("Change convert currency rates");
 
                 System.out.println("Select currency: ");
                 String currency = scanner.nextLine();

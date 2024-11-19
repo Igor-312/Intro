@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static models.CurrencyCode.*;
+
 public class AccountService implements AccountServiceInterface {
 
     // Репозиторий для работы с аккаунтами
@@ -66,30 +68,23 @@ public class AccountService implements AccountServiceInterface {
     // Создание аккаунта в USD
     @Override
     public void createAccountUSD() {
-        Account account = new Account(generateAccountId(), "USD", 0.0); // Инициализация с балансом 0
-        accountRepo.createAccount(account);
+        Account account = accountRepo.createAccount(USD, 0.0);
     }
 
     // Создание аккаунта в EUR
     @Override
     public void createAccountEUR() {
-        Account account = new Account(generateAccountId(), "EUR", 0.0); // Инициализация с балансом 0
-        accountRepo.createAccount(account);
+        Account account = accountRepo.createAccount(EUR, 0.0); // Инициализация с балансом 0
     }
 
     // Создание аккаунта в BTC
     @Override
     public void createAccountBTC() {
-        Account account = new Account(generateAccountId(), "BTC", 0.0); // Инициализация с балансом 0
-        accountRepo.createAccount(account);
+        Account account = accountRepo.createAccount(BTC, 0.0);
     }
 
     // Метод для генерации уникального ID аккаунта
     private static int accountIdCounter = 1; // Статический счетчик для уникальных ID
-
-    private int generateAccountId() {
-        return accountIdCounter++; // Генерация уникального ID с инкрементом
-    }
 
     // Показать баланс для аккаунта
     @Override
@@ -107,7 +102,7 @@ public class AccountService implements AccountServiceInterface {
     public Map<Integer, List<Account>> myAccounts() {
         Map<Integer, List<Account>> allAccounts = new HashMap<>();
         List<Account> accounts = accountRepo.getAllAccount();
-        allAccounts.put(0, accounts); // Можно добавить для каждого пользователя отдельные списки
+        allAccounts.put(0, accounts);
         return allAccounts;
     }
 }
