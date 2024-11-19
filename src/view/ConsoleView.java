@@ -214,7 +214,8 @@ public class ConsoleView {
             case 1:
 
                 System.out.println("Create account USD");
-                accountService.createAccountUSD();
+                User currentUser = userService.getActiveUser();
+                accountService.createAccountBTC(currentUser);
                 System.out.println("USD account created");
                 waitRead();
                 break;
@@ -222,7 +223,8 @@ public class ConsoleView {
             case 2:
 
                 System.out.println("Create account EUR");
-                accountService.createAccountEUR();
+                currentUser = userService.getActiveUser();
+                accountService.createAccountBTC(currentUser);
                 System.out.println("EUR account created");
                 waitRead();
                 break;
@@ -230,7 +232,8 @@ public class ConsoleView {
             case 3:
 
                 System.out.println("Create account BTC");
-                accountService.createAccountBTC();
+                currentUser = userService.getActiveUser();
+                accountService.createAccountBTC(currentUser);
                 System.out.println("BTC account created");
                 waitRead();
                 break;
@@ -339,7 +342,8 @@ public class ConsoleView {
             case 11:
 
                 System.out.println("My accounts");
-                Map<Integer, List<Account>> myAccounts = accountService.myAccounts();
+                currentUser = userService.getActiveUser();
+                List<Account> myAccounts = accountService.myAccounts(currentUser);
                 System.out.println(myAccounts);
 
                 waitRead();

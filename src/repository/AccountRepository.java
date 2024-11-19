@@ -19,11 +19,12 @@ public class AccountRepository implements AccountRepoInterface {
 
     // Возвращает баланс по ID аккаунта
     public double getAccountBalance(int accountId) { // Нужен в TransactionService для метода withdrawMoney чтоб получить тек.баланс счета
-        List<Account> account = accounts.get(accountId);
-        if (account != null) {
-            return account.getBalance();  // Получение баланса у аккаунта
-        }
-        throw new IllegalArgumentException("Account not found.");
+
+      return accountList.stream()
+              .filter(account -> account.getAccountId() == accountId)
+              .map(Account::getBalance)
+              .findFirst()
+              .orElseThrow(() -> new IllegalArgumentException(" Account not found "));
     }
 
     // Создать аккаунт
@@ -31,22 +32,36 @@ public class AccountRepository implements AccountRepoInterface {
     public Account createAccount(int userId, CurrencyCode currency, double initialBalance) {
 
         int accountId = atomicInteger.getAndIncrement();
-        Account account = new Account(accountId,currency, initialBalance);
+        Account account = new Account(accountId,currency, initialBalance,userId);
         accountList.add(account);
-        accounts.put(userId,accountList);
+        List<Account> accountsOfUser = accounts.get(userId);
+        if (accountsOfUser == null) {
+             accountsOfUser = new ArrayList<>();
+        }
+        accountsOfUser.add(account);
+
         return account;
     }
 
     // Получить аккаунт по ID
     @Override
     public Account getAccountById(int accountId) {
-        return accounts.get(accountId); // Доступ к Map по ключу
+        return  accountList.stream()
+                .filter(account -> account.getAccountId() == accountId)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(" Account not found "));
     }
+
+    public List<Account> userAccountsByUserId (int userId){
+
+        List<Account> accountsOfUser = accounts.get(userId);
+        return accountsOfUser;
+}
 
     // Получить все аккаунты
     @Override
     public List<Account> getAllAccount() {
-        return new ArrayList<>(accounts.values()); // Конвертация Map в List
+        return accountList;
     }
 
     // Пополнение баланса
@@ -63,7 +78,8 @@ public class AccountRepository implements AccountRepoInterface {
     // Удалить аккаунт
     @Override
     public void deleteAccount(int accountId) {
-        accounts.remove(accountId); // Удаление из Map
+        accountList.remove(accountId);
+        // make it not possible to delete account with non 0 balance
     }
 
 }

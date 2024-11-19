@@ -1,12 +1,10 @@
 package service;
 
 import models.Account;
-import models.CurrencyCode;
 import models.Role;
 import models.User;
 import repository.UserRepository;
 import utils.PersonValidate;
-import utils.UserNotFoundException;
 import utils.validatorExeptions.EmailValidateException;
 import utils.validatorExeptions.PasswordValidatorException;
 
@@ -18,7 +16,6 @@ public class UserService implements UserServiceInterface {
 
     private final UserRepository userRepository;
     public User activeUser;
-    public User getActiveUser;
     private User user;
     private PersonValidate personValidator;
 
@@ -115,8 +112,4 @@ public class UserService implements UserServiceInterface {
         return activeUser;
     }
 
-    public void addUserAccount(Account account) throws UserNotFoundException {
-
-        userRepository.createAccountForUser(account);
-    }
 }

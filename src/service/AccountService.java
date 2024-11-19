@@ -14,23 +14,18 @@ import java.util.List;
 import java.util.Map;
 
 import static models.CurrencyCode.*;
-import static repository.UserRepository.users;
-
 
 public class AccountService implements AccountServiceInterface {
 
     // Репозиторий для работы с аккаунтами
-    private AccountRepoInterface accountRepo;
-    private UserService userService;
+    private AccountRepository accountRepo;
+    //private UserService userService;
 
-
-    // Метод для генерации уникального ID аккаунта
-    private static int accountIdCounter = 1; // Статический счетчик для уникальных ID
 
     // Конструктор, принимающий репозиторий
     public AccountService() {
         this.accountRepo = new AccountRepository();
-        this.userService = new UserService();
+
 
     }
 
@@ -80,35 +75,35 @@ public class AccountService implements AccountServiceInterface {
 
     // Создание аккаунта в USD
     @Override
-    public void createAccountUSD() throws UserNotFoundException{
+    public void createAccountUSD(User user) throws UserNotFoundException{
 
-        User user = userService.getActiveUser();
+        /*User user = userService.getActiveUser();
         if (user == null) {
             throw new UserNotFoundException(" User not found ");
-        }
+        }*/
 
         Account account = accountRepo.createAccount(user.getUserId(),USD, 0.0);
     }
 
     // Создание аккаунта в EUR
     @Override
-    public void createAccountEUR()throws UserNotFoundException {
+    public void createAccountEUR(User user)throws UserNotFoundException {
 
-        User user = userService.getActiveUser();
+        /*User user = userService.getActiveUser();
         if (user == null) {
             throw new UserNotFoundException(" User not found ");
-        }
+        }*/
         Account account = accountRepo.createAccount(user.getUserId(),EUR, 0.0); // Инициализация с балансом 0
     }
 
     // Создание аккаунта в BTC
     @Override
-    public void createAccountBTC() throws UserNotFoundException {
+    public void createAccountBTC(User user) throws UserNotFoundException {
 
-        User user = userService.getActiveUser();
+       /* User user = userService.getActiveUser();
         if (user == null) {
             throw new UserNotFoundException(" User not found ");
-        }
+        }*/
 
         accountRepo.createAccount(user.getUserId(),BTC,0.0);
     }
@@ -124,12 +119,15 @@ public class AccountService implements AccountServiceInterface {
         return result;
     }
 
-    // Показать все аккаунты
     @Override
-    public Map<Integer, List<Account>> myAccounts() {
-        Map<Integer, List<Account>> allAccounts = new HashMap<>();
-        List<Account> accounts = accountRepo.getAllAccount();
-        allAccounts.put(0, accounts);
-        return allAccounts;
+    public List<Account> myAccounts(User user) throws UserNotFoundException {
+
+        /*User user = userService.getActiveUser();
+        if (user == null) {
+            throw new UserNotFoundException(" User not found ");
+        }*/
+
+        return accountRepo.userAccountsByUserId(user.getUserId());
+
     }
 }
