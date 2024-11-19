@@ -10,6 +10,10 @@ public class CurrencyService implements CurrencyServiceInterface {
         this.currencyRepo = new CurrencyRepo();
     }
 
+    public CurrencyService(CurrencyRepo currencyRepo) {
+        this.currencyRepo = currencyRepo;
+    }
+
     @Override
     public Map<String, Double> showExchangeRates() {
         return currencyRepo.getAllExchangeRates();
