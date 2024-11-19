@@ -68,4 +68,5 @@ public class Transaction {
     public void setUserId(int userId) {
         this.userId = userId;
     }
+
 }

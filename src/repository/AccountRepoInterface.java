@@ -15,8 +15,8 @@ public interface AccountRepoInterface {
     // Получение всех аккаунтов
     List<Account> getAllAccount();
 
-    // Обновление существующего аккаунта
-    void updateAccountBalance(int accountId, double amount);
+    // метод, который обновляет баланс конкретного аккаунта. Нужен в TransactionService для метода withdrawMoney
+    public boolean updateAccountBalance(int accountId, double amount);
 
     // Удаление аккаунта
     void deleteAccount(int accountId);
