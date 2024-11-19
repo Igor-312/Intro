@@ -17,20 +17,33 @@ public class TransactionRepository implements TransactionRepoInterface {
 
     @Override
     public void addTransaction(int accountID, Transaction transaction) {
-        if (transaction != null && transaction.getAccountId() == accountID) {
-            transactionMap.computeIfAbsent(accountID, k -> new ArrayList<>()).add(transaction);
-        } else {
-            System.out.println("Cannot add a null transaction or mismatched accountID.");
+        if (transaction == null) {
+            throw new IllegalArgumentException("Transaction cannot be null.");
         }
+        if (transaction.getAccountId() != accountID) {
+            throw new IllegalArgumentException("Account ID in transaction does not match the provided account ID.");
+        }
+        if (!transactionMap.containsKey(accountID)) {
+            throw new IllegalArgumentException("Account ID not found in the transaction repository.");
+        }
+
+        transactionMap.computeIfAbsent(accountID, k -> new ArrayList<>()).add(transaction);
     }
 
     @Override
     public List<Transaction> getTransactionsByAccountId(int accountId) {
-        return transactionMap.getOrDefault(accountId, new ArrayList<>());
+        if (!transactionMap.containsKey(accountId)) {
+            throw new IllegalArgumentException("Account ID not found in the transaction repository.");
+        }
+        return transactionMap.get(accountId);
     }
 
     @Override
     public List<Transaction> getTransactionsByType(Enum type) {
+
+        if (type == null) {
+            throw new IllegalArgumentException("Transaction type cannot be null.");
+        }
 
         List<Transaction> filteredTransactions = new ArrayList<>();
         if (type instanceof TypeTransaction) {
@@ -41,6 +54,8 @@ public class TransactionRepository implements TransactionRepoInterface {
                     }
                 }
             }
+        } else {
+            throw new IllegalArgumentException("Invalid transaction type provided.");
         }
         return filteredTransactions;
     }
@@ -48,8 +63,16 @@ public class TransactionRepository implements TransactionRepoInterface {
 
     @Override
     public Map<Integer, List<Transaction>> getTransactionsByUserId(int userId) {
+        if (userId <= 0) {
+            throw new IllegalArgumentException("User ID must be greater than zero.");
+        }
+
         Map<Integer, List<Transaction>> userTransactions = new HashMap<>();
         List<Account> userAccounts = userAccountRepo.getAccountsByUserId(userId);
+
+        if (userAccounts.isEmpty()) {
+            throw new IllegalArgumentException("No accounts found for the provided user ID.");
+        }
 
         for (Account account : userAccounts) {
             int accountId = account.getAccountId();
@@ -63,10 +86,14 @@ public class TransactionRepository implements TransactionRepoInterface {
 
     @Override
     public double getAccountBalance(int accountID) { // текущий баланс счета. реализация в TransactionService.
+        if (!transactionMap.containsKey(accountID)) {
+            throw new IllegalArgumentException("Account ID not found in the transaction repository.");
+        }
+
         double balance = 0.0;
         List<Transaction> transactions = getTransactionsByAccountId(accountID);
         for (Transaction transaction : transactions) {
-            //  вычитание для снятия, добавление для депозита
+            // вычитание для снятия, добавление для депозита
             if (transaction.getType() == TypeTransaction.CREDIT) {
                 balance += transaction.getAmount();
             } else if (transaction.getType() == TypeTransaction.DEBIT) {
@@ -86,5 +113,4 @@ public class TransactionRepository implements TransactionRepoInterface {
 
 
     }
-
 }
