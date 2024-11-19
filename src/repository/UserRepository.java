@@ -1,6 +1,7 @@
 package repository;
 
 import models.*;
+import utils.UserNotFoundException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -104,14 +105,7 @@ public class UserRepository implements UserRepoInterface{
         return userAccounts;
     }
 
-    public Account createAccountForUser(int userId, CurrencyCode currency, double initialBalance) {
+    public Account createAccountForUser(Account account) throws UserNotFoundException {
 
-        User user = users.get(userId);
-        if (user == null) {
-            throw new IllegalArgumentException("User not found.");
-        }
-        Account newAccount = accountRepository.createAccount(currency,initialBalance);
-        user.addUserAccount(newAccount);
-        return newAccount;
-    }
+}
 }

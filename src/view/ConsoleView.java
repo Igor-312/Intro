@@ -10,6 +10,7 @@ import service.AccountService;
 import service.TransactionService;
 import service.UserService;
 import service.CurrencyService;
+import utils.UserNotFoundException;
 import utils.validatorExeptions.EmailValidateException;
 import utils.validatorExeptions.PasswordValidatorException;
 
@@ -39,11 +40,11 @@ public class ConsoleView {
         scanner.nextLine();
     }
 
-    public void run() throws EmailValidateException, PasswordValidatorException {
+    public void run() throws EmailValidateException, PasswordValidatorException, UserNotFoundException {
         showLoginPage();
     }
 
-    private void showLoginPage() throws EmailValidateException, PasswordValidatorException {
+    private void showLoginPage() throws EmailValidateException, PasswordValidatorException, UserNotFoundException {
         while (true) {
 
             System.out.println("Welcome!");
@@ -63,7 +64,7 @@ public class ConsoleView {
         }
     }
 
-    private void handleLoginPageChoice(int input) throws EmailValidateException, PasswordValidatorException {
+    private void handleLoginPageChoice(int input) throws EmailValidateException, PasswordValidatorException, UserNotFoundException {
         switch (input) {
             case 1:
                 //authorization
@@ -139,7 +140,7 @@ public class ConsoleView {
         }
     }
 
-    private void showHomePage() {
+    private void showHomePage() throws UserNotFoundException {
         while (true) {
 
             System.out.println("Menu:");
@@ -159,7 +160,7 @@ public class ConsoleView {
         }
     }
 
-    private void handleShowHomePageChoice(int input) {
+    private void handleShowHomePageChoice(int input) throws UserNotFoundException {
         switch (input) {
             case 1:
                 showUserMenu();
@@ -181,7 +182,7 @@ public class ConsoleView {
         }
     }
 
-    private void showUserMenu() {
+    private void showUserMenu() throws UserNotFoundException {
         while (true) {
             System.out.println("User menu:");
             System.out.println("1. Create account USD");
@@ -207,7 +208,7 @@ public class ConsoleView {
         }
     }
 
-    private void handleUserMenuChoice(int input) {
+    private void handleUserMenuChoice(int input) throws UserNotFoundException {
 
         switch (input) {
             case 1:

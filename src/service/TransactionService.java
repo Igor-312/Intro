@@ -2,16 +2,12 @@ package service;
 import models.Currency;
 import models.CurrencyCode;
 import models.Transaction;
-import models.TypeTransaction;
 import repository.AccountRepository;
 import repository.TransactionRepository;
 
 
 import java.time.LocalDateTime;
 
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import java.util.stream.Collectors;
@@ -81,7 +77,7 @@ public class TransactionService implements TransactionServiceInterface {
     }
 
     // Метод для получения курса обмена (фиктивный)
-    private double getExchangeRate(String fromCurrency, String toCurrency) {
+    private double getExchangeRate(CurrencyCode fromCurrency, CurrencyCode toCurrency) {
         //  обмен USD на EUR
         if ("USD".equals(fromCurrency) && "EUR".equals(toCurrency)) {
             return 0.85; // курс USD к EUR

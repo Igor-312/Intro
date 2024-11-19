@@ -4,13 +4,12 @@ public class Account {
     private int accountId;
     private CurrencyCode currency;
     private double balance;
-    private User user;
 
-    public Account(CurrencyCode currency, double balance) {
+
+    public Account(int accountId,CurrencyCode currency, double balance) {
         this.accountId = accountId++;
         this.currency = currency;
         this.balance = balance;
-        this.user = user;
     }
 
     @Override

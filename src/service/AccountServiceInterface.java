@@ -1,16 +1,17 @@
 package service;
 import java.util.Map;
 import models.Account;
+import utils.UserNotFoundException;
 
 import java.util.List;
 
 public interface AccountServiceInterface {
 
-    void createAccountUSD();
+    void createAccountUSD() throws UserNotFoundException;
 
-    void createAccountEUR();
+    void createAccountEUR() throws UserNotFoundException;
 
-    void createAccountBTC();
+    void createAccountBTC() throws UserNotFoundException;
 
     Map<Integer, List<Account>> showBalance(int accountID);
 

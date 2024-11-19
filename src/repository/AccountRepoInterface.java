@@ -8,7 +8,7 @@ import java.util.List;
 public interface AccountRepoInterface {
 
     // Создание нового аккаунта
-    Account createAccount(CurrencyCode currency, double initialBalance);
+    Account createAccount(int userId, CurrencyCode currency, double initialBalance);
 
     // Получение аккаунта по ID
     Account getAccountById(int accountId);
