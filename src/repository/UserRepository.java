@@ -7,18 +7,27 @@ import java.util.List;
 import java.util.Map;
 
 public class UserRepository implements UserRepoInterface{
-    private static Map<Integer, User> users = new HashMap<>();
+    public static Map<Integer, User> users = new HashMap<>();
     private static int userIdCounter = 1;
     private AccountRepository accountRepository;
 
     public UserRepository() {
         this.accountRepository = accountRepository;
+        addDefaultUsers();
+        addTestAdmin();
+
     }
 
     public void addDefaultUsers(){
-        users.put(1, new User("Masha123@gmail.com", "Masha123@gmail.com"));
-        users.put(2, new User("Neshyna123@gmail.com", "Neshyna123@gmail.com"));
+        users.put(1, new User("Masha123@gmail.com", "Masha123@gmail.com"));//id 0
     }
+
+    public void addTestAdmin(){
+        User admin = new User("Neshyna123@gmail.com", "Neshyna123@gmail.com");//id 1
+        admin.setRole(Role.ADMIN);
+        users.put(2,admin);
+    }
+
 
     public User addUser(String email, String password){
 

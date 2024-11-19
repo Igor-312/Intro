@@ -4,8 +4,8 @@ public class Currency {
     private final CurrencyCode currencyCode;
     private String name;
 
-    public Currency(String currencyCode, String name) {
-        this.currencyCode = CurrencyCode.valueOf(currencyCode);
+    public Currency(CurrencyCode currencyCode, String name) {
+        this.currencyCode = currencyCode;
 
         this.name = name;
     }

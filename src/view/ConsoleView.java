@@ -1,11 +1,7 @@
 package view;
 
-import models.Account;
+import models.*;
 
-import models.Currency;
-import models.ExchangeRate;
-import models.Transaction;
-import models.User;
 import service.CurrencyService;
 import utils.PersonValidate;
 
@@ -173,6 +169,7 @@ public class ConsoleView {
                     showAdminMenu();
                 }else{
                     System.out.println("Admin menu is available only for admin.");
+                    showHomePage();
                 }
                 break;
             case 3:
@@ -278,14 +275,16 @@ public class ConsoleView {
 
                 System.out.println("Amount of money to exchange:");
                 amountOfMoney = scanner.nextDouble();
+                scanner.nextLine();
 
                 System.out.println("Currency (from): ");
-                String currencyFrom = scanner.nextLine();
+                CurrencyCode currencyFrom = CurrencyCode.valueOf(scanner.nextLine());
+                scanner.nextLine();
 
                 System.out.println("Currency (to): ");
                 String currencyTo = scanner.nextLine();
 
-                transactionService.exchangeMoney(amountOfMoney,currencyFrom,currencyTo);
+                transactionService.exchangeMoney(amountOfMoney,currencyFrom, CurrencyCode.valueOf(currencyTo));
                 System.out.println("Money has been exchanged");
 
                 waitRead();
@@ -355,7 +354,7 @@ public class ConsoleView {
         while (true) {
 
             System.out.println("Admin menu:");
-            System.out.println("1. Change currency exchange rates");
+            System.out.println("1. Change convert currency rates");
             System.out.println("2. Give admin permissions");
             System.out.println("3. Block user");//bitcoin
             System.out.println("4. Find user");
@@ -370,7 +369,7 @@ public class ConsoleView {
 
             if (input == 0) break;
 
-            handleUserMenuChoice(input);
+            handleAdminMenuChoice(input);
         }
     }
 
@@ -378,7 +377,7 @@ public class ConsoleView {
         switch (input) {
             case 1:
 
-                System.out.println("Change currency exchange rates");
+                System.out.println("Change convert currency rates");
 
                 System.out.println("Select currency: ");
                 String currency = scanner.nextLine();

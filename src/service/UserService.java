@@ -15,14 +15,14 @@ import java.util.Optional;
 public class UserService implements UserServiceInterface {
 
     private final UserRepository userRepository;
-    private User activeUser;
+    public User activeUser;
+    public User getActiveUser;
     private User user;
     private PersonValidate personValidator;
 
     public UserService() {
         this.userRepository = new UserRepository();
     }
-
 
     @Override
     public Map<Integer, User> allUsers() {
@@ -33,7 +33,6 @@ public class UserService implements UserServiceInterface {
     @Override
     public void giveAdminPermissions(int userId) {
         userRepository.giveAdminPermissions(userId);
-        userRepository.giveAdminPermissions(2);//default test user
     }
 
     @Override
@@ -108,5 +107,9 @@ public class UserService implements UserServiceInterface {
     @Override
     public List<Account> getAccountsByUserId(int userId) {
         return userRepository.getAccountsByUserId(userId);
+    }
+
+    public User getActiveUser() {
+        return activeUser;
     }
 }

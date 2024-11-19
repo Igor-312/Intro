@@ -86,10 +86,6 @@ public class AccountService implements AccountServiceInterface {
     // Метод для генерации уникального ID аккаунта
     private static int accountIdCounter = 1; // Статический счетчик для уникальных ID
 
-    private int generateAccountId() {
-        return accountIdCounter++; // Генерация уникального ID с инкрементом
-    }
-
     // Показать баланс для аккаунта
     @Override
     public Map<Integer, List<Account>> showBalance(int accountId) {
@@ -106,7 +102,7 @@ public class AccountService implements AccountServiceInterface {
     public Map<Integer, List<Account>> myAccounts() {
         Map<Integer, List<Account>> allAccounts = new HashMap<>();
         List<Account> accounts = accountRepo.getAllAccount();
-        allAccounts.put(0, accounts); // Можно добавить для каждого пользователя отдельные списки
+        allAccounts.put(0, accounts);
         return allAccounts;
     }
 }
