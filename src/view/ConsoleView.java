@@ -77,6 +77,7 @@ public class ConsoleView {
                 String password1 = scanner.nextLine();
 
                 boolean user1 = userService.loginUser(email2, password1);
+                System.out.println("User is successfully logged in.");
 
                 if (!user1) {
                     System.out.println("Invalid email or password.");
@@ -145,7 +146,7 @@ public class ConsoleView {
         }
     }
 
-    private void showHomePage() throws UserNotFoundException {
+    private void showHomePage() throws UserNotFoundException, PasswordValidatorException, EmailValidateException {
         while (true) {
 
             System.out.println("Menu:");
@@ -165,7 +166,7 @@ public class ConsoleView {
         }
     }
 
-    private void handleShowHomePageChoice(int input) throws UserNotFoundException {
+    private void handleShowHomePageChoice(int input) throws UserNotFoundException, PasswordValidatorException, EmailValidateException {
         switch (input) {
             case 1:
                 showUserMenu();
@@ -181,6 +182,7 @@ public class ConsoleView {
             case 3:
                 userService.logout();
                 System.out.println("You are logged out");
+                showLoginPage();
 
             default:
                 System.out.println("\nIncorrect input, please enter a number!");

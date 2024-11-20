@@ -53,7 +53,6 @@ public class UserService implements UserServiceInterface {
             return false;
         }
         activeUser = user;
-        System.out.println("User is successfully logged in.");
         return true;
     }
 
@@ -96,7 +95,9 @@ public class UserService implements UserServiceInterface {
             // Если activeUser равен null, значит пользователь не авторизован.
             throw new IllegalStateException("User is not logged in.");
         }
-        return activeUser.getRole() == Role.BLOCKED ;
+
+        return activeUser.getRole() == Role.BLOCKED;
+
     }
 
     @Override
