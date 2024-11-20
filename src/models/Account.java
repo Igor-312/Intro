@@ -6,9 +6,9 @@ public class Account {
     private double balance;
     private int userId;
 
-
     public Account(int accountId,CurrencyCode currency, double balance,int userId) {
         this.accountId = accountId;
+
         this.currency = currency;
         this.balance = balance;
         this.userId = userId;

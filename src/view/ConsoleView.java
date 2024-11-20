@@ -78,12 +78,17 @@ public class ConsoleView {
 
                 boolean user1 = userService.loginUser(email2, password1);
 
+                if (!user1) {
+                    System.out.println("Invalid email or password.");
+                    break;
+                }
+
+                // После успешной авторизации проверяем статус блокировки
                 if (userService.isUserBlocked()) {
                     System.out.println("Login is not possible for blocked users. Please contact your manager");
                     showLoginPage();
-                }
 
-                if (user1 == true) {
+                  } else {
                     showHomePage();
                 }
 
@@ -196,6 +201,7 @@ public class ConsoleView {
             System.out.println("9. Show currency exchange rates");
             System.out.println("10. Delete account");
             System.out.println("11. My accounts");
+            System.out.println("12. Show account details");// Новый пункт меню
             System.out.println("0. Back");
             System.out.println("\n Select an option.");
 
@@ -349,10 +355,46 @@ public class ConsoleView {
                 waitRead();
                 break;
 
+            case 12:  // Показать подробности счета
+                    showAccountDetails();
+                    break;
+
             default:
 
                 System.out.println("\nIncorrect input, please enter a number!");
         }
+    }
+
+    private void showAccountDetails() {
+            System.out.println("Enter account ID to view details:");
+        int accountId = scanner.nextInt();
+        scanner.nextLine();
+
+        try {
+            // Вызов метода getAccountDetails из accountService
+            Map<String, Object> accountDetails = accountService.getAccountDetails(accountId);
+
+            System.out.println("Account Details:");
+            System.out.println("========================================");
+            System.out.println("Account ID: " + accountDetails.get("Account ID"));
+            System.out.println("Currency: " + accountDetails.get("Currency"));
+            System.out.println("Balance: " + accountDetails.get("Balance"));
+            System.out.println("Transactions: ");
+
+            List<Transaction> transactions = (List<Transaction>) accountDetails.get("Transactions");
+            if (transactions.isEmpty()) {
+                System.out.println("No transactions available.");
+            } else {
+                for (Transaction transaction : transactions) {
+                    System.out.println(" - " + transaction); // Выводим транзакции
+                }
+            }
+            System.out.println("========================================");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+
+        waitRead();
     }
 
     private void showAdminMenu () {

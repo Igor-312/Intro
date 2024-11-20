@@ -1,7 +1,8 @@
 package models;
 
-public enum CurrencyCode {
+public enum CurrencyCode  {
     USD,
     EUR,
-    BTC
+    BTC;
+
 }

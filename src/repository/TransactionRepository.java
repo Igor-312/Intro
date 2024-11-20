@@ -12,7 +12,7 @@ public class TransactionRepository implements TransactionRepoInterface {
     private final Map<Integer, List<Transaction>> transactionMap = new HashMap<>();
     private UserService userService;
 
-    public TransactionRepository() {
+    public TransactionRepository(UserService userService) {
         this.userService = userService;
     }
 
@@ -24,11 +24,16 @@ public class TransactionRepository implements TransactionRepoInterface {
         if (transaction.getAccountId() != accountID) {
             throw new IllegalArgumentException("Account ID in transaction does not match the provided account ID.");
         }
-        if (!transactionMap.containsKey(accountID)) {
-            throw new IllegalArgumentException("Account ID not found in the transaction repository.");
+        // Проверяем существование счета в системе (через UserService)
+        if (!userService.doesAccountExist(accountID)) { // Метод doesAccountExist   реализован в UserService
+            throw new IllegalArgumentException("Account ID does not exist in the system.");
         }
-
-        transactionMap.computeIfAbsent(accountID, k -> new ArrayList<>()).add(transaction);
+        // Проверка существования счета в transactionMap
+        if (!transactionMap.containsKey(accountID)) {
+            transactionMap.put(accountID, new ArrayList<>()); // Если счета нет в repository, создаем его
+        }
+        // Добавление транзакции в хранилище
+        transactionMap.get(accountID).add(transaction);
     }
 
     @Override
@@ -41,22 +46,18 @@ public class TransactionRepository implements TransactionRepoInterface {
 
    @Override
     public List<Transaction> getTransactionsByType(Enum type) {
-
         if (type == null) {
             throw new IllegalArgumentException("Transaction type cannot be null.");
         }
 
         List<Transaction> filteredTransactions = new ArrayList<>();
-        if (type instanceof TypeTransaction) {
             for (List<Transaction> transactions : transactionMap.values()) {
                 for (Transaction transaction : transactions) {
                     if (transaction.getType().equals(type)) {
                         filteredTransactions.add(transaction);
                     }
                 }
-            }
-        } else {
-            throw new IllegalArgumentException("Invalid transaction type provided.");
+
         }
         return filteredTransactions;
     }
@@ -93,12 +94,26 @@ public class TransactionRepository implements TransactionRepoInterface {
 
         double balance = 0.0;
         List<Transaction> transactions = getTransactionsByAccountId(accountID);
+
         for (Transaction transaction : transactions) {
-            // вычитание для снятия, добавление для депозита
+            // Проверка на отрицательную сумму для кредитных транзакций
+            if (transaction.getAmount() <= 0) {
+                throw new IllegalArgumentException("Transaction amount must be greater than zero.");
+            }
+            // Обработка кредитных транзакций (добавление суммы)
             if (transaction.getType() == TypeTransaction.CREDIT) {
                 balance += transaction.getAmount();
-            } else if (transaction.getType() == TypeTransaction.DEBIT) {
+            }
+            // Обработка дебетовых транзакций (вычитание суммы)
+            else if (transaction.getType() == TypeTransaction.DEBIT) {
+                if (balance < transaction.getAmount()) {
+                    throw new IllegalArgumentException("Insufficient funds for the debit transaction.");
+                }
                 balance -= transaction.getAmount();
+            }
+            // Обработка всех других типов транзакций
+            else {
+                throw new IllegalArgumentException("Unknown transaction type: " + transaction.getType());
             }
         }
         return balance;

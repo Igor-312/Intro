@@ -27,6 +27,8 @@ public interface AccountServiceInterface {
     // Снятие средств
     void withdraw(int accountId, double amount);
 
+    Map<String, Object> getAccountDetails(int accountId);
+
     // Удаление аккаунта
     void deleteAccount(int accountId);
 }
