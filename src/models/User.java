@@ -1,5 +1,6 @@
 package models;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -10,14 +11,13 @@ public class User {
     private String email;
     private String password;
     private Role role;
-
     private List<Account> userAccounts;
 
     public User(String email, String password) {
         this.email = email;
         this.password = password;
-        this.userAccounts = userAccounts;
-        this.role = role;
+        this.userAccounts = new ArrayList<>(); // Инициализация списка аккаунтов
+        this.role = Role.USER; // Установка роли по умолчанию
         this.userId = userIdCounter++;
     }
 
@@ -68,8 +68,8 @@ public class User {
         return userAccounts;
     }
 
-    public void addUserAccount(Account accounts) {
-        this.userAccounts.add(accounts);
+    public void addUserAccount(Account account) {
+        this.userAccounts.add(account);
     }
 
     @Override

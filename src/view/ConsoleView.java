@@ -11,10 +11,10 @@ import service.TransactionService;
 import service.UserService;
 import utils.validatorExeptions.EmailValidateException;
 import utils.validatorExeptions.PasswordValidatorException;
+import utils.UserNotFoundException;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Scanner;
 
 public class ConsoleView {
@@ -179,7 +179,6 @@ public class ConsoleView {
         int accountID;
         double amountOfMoney;
         int userId = userService.getActiveUser().getUserId();
-
         switch (input) {
             case 1:
                 System.out.println("Create account USD");
@@ -286,6 +285,7 @@ public class ConsoleView {
                 scanner.nextLine();
 
                 accountService.deleteAccount(accountID);
+                System.out.println("Account deleted.");
                 waitRead();
                 break;
 
@@ -414,4 +414,3 @@ public class ConsoleView {
         }
     }
 }
-

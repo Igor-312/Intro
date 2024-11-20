@@ -3,6 +3,7 @@ package service;
 import models.Account;
 import models.Role;
 import models.User;
+import models.CurrencyCode;
 import repository.UserRepository;
 import utils.validatorExeptions.EmailValidateException;
 import utils.validatorExeptions.PasswordValidatorException;
@@ -84,6 +85,11 @@ public class UserService {
         return userRepository.getAccountsByUserId(userId);
     }
 
+    // Добавляем метод createAccountForUser
+    public Account createAccountForUser(int userId, CurrencyCode currency, double initialBalance) {
+        return userRepository.createAccountForUser(userId, currency, initialBalance);
+    }
+
     // Добавляем метод allUsers
     public Map<Integer, User> allUsers() {
         return userRepository.allUsers();
@@ -94,3 +100,4 @@ public class UserService {
         activeUser = null;
     }
 }
+

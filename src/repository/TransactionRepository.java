@@ -24,9 +24,6 @@ public class TransactionRepository implements TransactionRepoInterface {
         if (transaction.getAccountId() != accountID) {
             throw new IllegalArgumentException("Account ID in transaction does not match the provided account ID.");
         }
-        if (!transactionMap.containsKey(accountID)) {
-            throw new IllegalArgumentException("Account ID not found in the transaction repository.");
-        }
 
         transactionMap.computeIfAbsent(accountID, k -> new ArrayList<>()).add(transaction);
     }
