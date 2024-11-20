@@ -16,12 +16,8 @@ public class Account {
 
     @Override
     public String toString() {
-        return "Account{" +
-                "accountId=" + accountId +
-                ", currency=" + currency +
-                ", balance=" + balance +
-                ", userId=" + userId +
-                '}';
+        return String.format("Account ID: %d | Currency: %s | Balance: %.2f | User ID: %d",
+                accountId, currency, balance, userId);
     }
 
     public int getAccountId() {

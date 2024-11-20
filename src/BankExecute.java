@@ -27,8 +27,6 @@ public class BankExecute {
                 currencyService
         );
 
-        //  создаем AccountService, передавая ему уже инициализированный transactionService
-
 
         ConsoleView consoleView = new ConsoleView(accountService, transactionService, userService, currencyService);
 
