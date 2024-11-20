@@ -1,36 +1,50 @@
 package service;
-
 import models.Currency;
+import models.CurrencyCode;
 import models.Transaction;
+import models.TypeTransaction;
+import repository.AccountRepository;
 import repository.TransactionRepository;
 
+
 import java.time.LocalDateTime;
+
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import java.util.stream.Collectors;
+
 import java.util.List;
 import java.util.Map;
 
+import static models.CurrencyCode.USD;
+
 public class TransactionService implements TransactionServiceInterface {
+
     private final TransactionRepository transactionRepository;
 
-    public TransactionService(TransactionRepository transactionRepository) {
-        this.transactionRepository = transactionRepository;
+    public TransactionService() {
+        this.transactionRepository = new TransactionRepository();
     }
 
     @Override
     public void addMoney(int accountID, double amountOfMoney) {
         if (amountOfMoney <= 0) {
-            System.out.println("The amount of money must be greater than zero.");
-            return;
+            throw new IllegalArgumentException("The amount of money must be greater than zero.");
         }
 
+        // Создание новой транзакции
         Transaction newTransaction = new Transaction(
                 generateTransactionId(),
                 accountID,
                 amountOfMoney,
                 LocalDateTime.now(),
-                new Currency("USD", "US Dollar")
+                new Currency(USD, "US Dollar")
         );
 
+        // Добавление транзакции в репозиторий
         transactionRepository.addTransaction(accountID, newTransaction);
         System.out.println("Successfully added " + amountOfMoney + " on account ID: " + accountID);
     }
@@ -38,62 +52,81 @@ public class TransactionService implements TransactionServiceInterface {
     @Override
     public void withdrawMoney(int accountID, double amountOfMoney) {
         if (amountOfMoney <= 0) {
-            System.out.println("The amount of money must be greater than zero.");
-            return;
+            throw new IllegalArgumentException("The amount of money must be greater than zero.");
         }
+        // Получаем текущий баланс счета
+        AccountRepository accountRepository = new AccountRepository();
+        double currentBalance = accountRepository.getAccountBalance(accountID);
 
-        double currentBalance = transactionRepository.getAccountBalance(accountID);
         if (currentBalance < amountOfMoney) {
-            System.out.println("There are not enough funds in the account.");
-            return;
+            throw new IllegalArgumentException("Not enough funds on the account.");
         }
 
+        // Создание транзакции на снятие средств
         Transaction withdrawalTransaction = new Transaction(
                 generateTransactionId(),
                 accountID,
-                -amountOfMoney,
+                -amountOfMoney, // Отрицательное значение для снятия
                 LocalDateTime.now(),
-                new Currency("USD", "Доллар США")
+                new Currency(USD, "Доллар США")
         );
 
+        // Добавление транзакции в репозиторий
         transactionRepository.addTransaction(accountID, withdrawalTransaction);
         System.out.println("Successfully withdrew " + amountOfMoney + " from the account ID: " + accountID);
+
+        // Обновление баланса после транзакции (если требуется)
+        accountRepository.updateAccountBalance(accountID, -amountOfMoney);
+
+    }
+
+    // Метод для получения курса обмена (фиктивный)
+    private double getExchangeRate(String fromCurrency, String toCurrency) {
+        //  обмен USD на EUR
+        if ("USD".equals(fromCurrency) && "EUR".equals(toCurrency)) {
+            return 0.85; // курс USD к EUR
+        }
+
+        if (!"USD".equals(fromCurrency) && !"EUR".equals(toCurrency)) {
+            throw new IllegalArgumentException("Unsupported currency exchange: " + fromCurrency + " to " + toCurrency);
+        }
+
+        return 1.0; // По умолчанию 1:1 для неподдерживаемых валют
     }
 
     @Override
-    public void exchangeMoney(double amountOfMoney, String currencyFrom, String currencyTo) {
+    public void exchangeMoney(double amountOfMoney, CurrencyCode currencyFrom, CurrencyCode currencyTo) {
+
         if (amountOfMoney <= 0) {
-            System.out.println("The amount of money must be greater than zero.");
-            return;
+            throw new IllegalArgumentException("The amount of money must be greater than zero.");
         }
 
-        double exchangeRate = getExchangeRate(currencyFrom, currencyTo);
+        double exchangeRate = getExchangeRate(currencyFrom, currencyTo); // Метод для получения курса обмена.
+
+        // Вычисление конвертированной суммы
         double convertedAmount = amountOfMoney * exchangeRate;
 
+        // Создание транзакции обмена валют
         Currency fromCurrency = new Currency(currencyFrom, currencyFrom + " Currency ");
         Currency toCurrency = new Currency(currencyTo, currencyTo + " Currency ");
 
+
         Transaction exchangeTransaction = new Transaction(
                 generateTransactionId(),
-                0,
+                0, // Специальный ID для обмена валют
                 convertedAmount,
                 LocalDateTime.now(),
-                fromCurrency
+                fromCurrency  // Используем валюту "от"
         );
 
+        // Добавление транзакции в репозиторий
         transactionRepository.addTransaction(0, exchangeTransaction);
-        System.out.println("Exchanged " + amountOfMoney + " с " + currencyFrom + " на " + currencyTo + " по курсу " + exchangeRate);
+        System.out.println("Exchanged " + amountOfMoney + " с " + currencyFrom + " on " + currencyTo + " at the rate " + exchangeRate);
     }
 
-    private double getExchangeRate(String fromCurrency, String toCurrency) {
-        if ("USD".equals(fromCurrency) && "EUR".equals(toCurrency)) {
-            return 0.85;
-        }
-        return 1.0;
-    }
 
     @Override
-    public Map<Integer, List<Transaction>> showHistory() {
+    public Map<Integer, List<Transaction>> showHistory() {// Извлечь все транзакции, сгруппированные по account ID
         return transactionRepository.getAllTransactions()
                 .stream()
                 .collect(Collectors.groupingBy(Transaction::getAccountId));
@@ -107,8 +140,11 @@ public class TransactionService implements TransactionServiceInterface {
                 .collect(Collectors.groupingBy(Transaction::getAccountId));
     }
 
+     // AtomicInteger гарантирует, что счетчик будет работать корректно в многозадачных приложениях.
+    private static final AtomicInteger transactionIdCounter = new AtomicInteger(0);
 
     private int generateTransactionId() {
-        return (int) (Math.random() * 100000);
+        return transactionIdCounter.incrementAndGet();
     }
 }
+

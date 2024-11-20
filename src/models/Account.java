@@ -2,18 +2,15 @@ package models;
 
 public class Account {
     private int accountId;
-    private Currency currency;
+    private CurrencyCode currency;
     private double balance;
     private User user;
 
-    public Account(int accountId, Currency currency, double balance,User user) {
-        this.accountId = accountId;
+    public Account(CurrencyCode currency, double balance) {
+        this.accountId = accountId++;
         this.currency = currency;
         this.balance = balance;
         this.user = user;
-    }
-
-    public Account(int accountId, String usd, double balance) {
     }
 
     @Override
@@ -33,11 +30,11 @@ public class Account {
         this.accountId = accountId;
     }
 
-    public Currency getCurrency() {
+    public CurrencyCode getCurrency() {
         return currency;
     }
 
-    public void setCurrency(Currency currency) {
+    public void setCurrency(CurrencyCode currency) {
         this.currency = currency;
     }
 

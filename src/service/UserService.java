@@ -1,45 +1,115 @@
 package service;
 
+import models.Account;
+import models.Role;
 import models.User;
 import repository.UserRepository;
+import utils.PersonValidate;
+import utils.validatorExeptions.EmailValidateException;
+import utils.validatorExeptions.PasswordValidatorException;
 
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
+import java.util.Optional;
 
-public class UserService {
+public class UserService implements UserServiceInterface {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    public User activeUser;
+    public User getActiveUser;
+    private User user;
+    private PersonValidate personValidator;
 
     public UserService() {
         this.userRepository = new UserRepository();
     }
 
-    // Метод для получения всех пользователей
-    public List<User> getAllUsers() {
-        return userRepository.allUsers();
+    @Override
+    public Map<Integer, User> allUsers() {
+        Map<Integer,User> allUsers = userRepository.allUsers();
+        return allUsers;
     }
 
-    // Метод для получения всех пользователей в виде Map (например, с использованием ID как ключа)
-    public Map<Integer, User> getAllUsersAsMap() {
-        List<User> userList = userRepository.allUsers();
-        Map<Integer, User> userMap = new HashMap<>();
+    @Override
+    public void giveAdminPermissions(int userId) {
+        userRepository.giveAdminPermissions(userId);
+    }
 
-        // Преобразуем список в Map
-        for (User user : userList) {
-            userMap.put(user.getId(), user);  // Предполагаем, что у класса User есть метод getId()
+    @Override
+    public void blockUser(int userId) {
+        userRepository.blockUser(userId);
+    }
+
+    @Override
+    public User findUser(int userId) {
+        User user = userRepository.findUser(userId);
+        return user;
+    }
+
+    @Override
+    public boolean loginUser(String email, String password) {
+        User user = userRepository.getUserEmail(email);
+        if (user == null || !user.getPassword().equals(password)) {
+            System.out.println("Invalid email or password.");
+            return false;
         }
-
-        return userMap;
+        activeUser = user;
+        System.out.println("User is successfully logged in.");
+        return true;
     }
 
-    // Метод для добавления пользователя
-    public void addUser(User user) {
-        userRepository.addUser(user);
+    @Override
+    public Optional<User> registerUser(String email, String password) throws EmailValidateException, PasswordValidatorException {
+
+        try {
+
+        if (!personValidator.isEmailValid(email)) {
+            System.out.println("Please check the email.");
+            return Optional.empty();
+        }
+        if (!personValidator.isPasswordValid(password)) {
+            System.out.println("Please check the password.");
+            return Optional.empty();
+        }
+        if (!userRepository.isMailExist(email)){
+            user = userRepository.addUser(email, password);
+        }else {
+            System.out.println("Email already exist");
+        }
+        }catch (EmailValidateException | PasswordValidatorException e) {
+        System.out.println(e. getMessage());
+        return Optional.empty();
+    }
+        return Optional.ofNullable(user);
     }
 
-    // Метод для создания аккаунта
-    public void createAccount(String currencyCode, double initialBalance) {
-        userRepository.createAccount(currencyCode, initialBalance);
+    @Override
+    public boolean isUserAdmin() {
+        if (activeUser.getRole() != Role.ADMIN) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean isUserBlocked() {
+        if (activeUser.getRole() != Role.BLOCKED) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void logout() {
+        activeUser = null;
+    }
+
+    @Override
+    public List<Account> getAccountsByUserId(int userId) {
+        return userRepository.getAccountsByUserId(userId);
+    }
+
+    public User getActiveUser() {
+        return activeUser;
     }
 }
