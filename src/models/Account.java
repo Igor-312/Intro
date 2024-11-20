@@ -7,7 +7,6 @@ public class Account {
     private User user;
 
     public Account(CurrencyCode currency, double balance) {
-        this.accountId = accountId++;
         this.currency = currency;
         this.balance = balance;
         this.user = user;

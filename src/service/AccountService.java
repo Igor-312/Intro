@@ -2,8 +2,10 @@ package service;
 
 import models.Account;
 
+import models.Transaction;
 import repository.AccountRepoInterface;
 import repository.AccountRepository;
+import repository.TransactionRepository;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,15 +15,14 @@ import static models.CurrencyCode.*;
 
 public class AccountService implements AccountServiceInterface {
 
-    // Репозиторий для работы с аккаунтами
-    private AccountRepoInterface accountRepo;
+    private final TransactionService transactionService;
+    private final AccountRepoInterface accountRepo;
 
-    // Конструктор, принимающий репозиторий
-    public AccountService() {
-        this.accountRepo = new AccountRepository();
+    public AccountService(TransactionService transactionService, AccountRepoInterface accountRepository) {
+        this.transactionService = transactionService; // Передаем через конструктор
+        this.accountRepo = accountRepository;
     }
-
-    // Получение аккаунта по ID
+        // Получение аккаунта по ID
     @Override
     public Account getAccountById(int accountId) {
         Account account = accountRepo.getAccountById(accountId);
@@ -52,6 +53,29 @@ public class AccountService implements AccountServiceInterface {
             throw new IllegalArgumentException("Insufficient balance");
         }
         accountRepo.updateAccountBalance(accountId, -amount); // Снятие средств с баланса
+    }
+
+    @Override
+    public Map<String, Object> getAccountDetails(int accountId) {
+        Account account = getAccountById(accountId);
+        if (account == null) {
+            throw new IllegalArgumentException("Account not found with ID: " + accountId);
+        }
+
+        // Получение кода валюты через CurrencyCode
+        String currencyCode = account.getCurrency().name();  // Используем name() для перечисления CurrencyCode
+
+        // Получение транзакций через TransactionService
+        List<Transaction> transactions = transactionService.showHistory().get(accountId);
+
+        // Подготовка результата для отображения
+        Map<String, Object> accountDetails = new HashMap<>();
+        accountDetails.put("Account ID", accountId);
+        accountDetails.put("Currency", currencyCode);  // Используем код валюты
+        accountDetails.put("Balance", account.getBalance());
+        accountDetails.put("Transactions", transactions != null ? transactions : List.of());
+
+        return accountDetails;
     }
 
     // Удаление аккаунта
