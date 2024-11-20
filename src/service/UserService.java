@@ -1,96 +1,45 @@
 package service;
 
-import models.Role;
 import models.User;
 import repository.UserRepository;
-import utils.PersonValidate;
-import utils.validatorExeptions.EmailValidateException;
-import utils.validatorExeptions.PasswordValidatorException;
 
+import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
-public class UserService implements UserServiceInterface {
+public class UserService {
 
-    private final UserRepository userRepository;  // Используем final, чтобы подчеркнуть неизменяемость
-    private User activeUser;
-    private static PersonValidate personValidator;
+    private UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserService() {
+        this.userRepository = new UserRepository();
     }
 
-    @Override
-    public Map<Integer, User> allUsers() {
+    // Метод для получения всех пользователей
+    public List<User> getAllUsers() {
         return userRepository.allUsers();
     }
 
-    @Override
-    public void giveAdminPermissions(int userId) {
-        userRepository.giveAdminPermissions(userId);
-    }
+    // Метод для получения всех пользователей в виде Map (например, с использованием ID как ключа)
+    public Map<Integer, User> getAllUsersAsMap() {
+        List<User> userList = userRepository.allUsers();
+        Map<Integer, User> userMap = new HashMap<>();
 
-    @Override
-    public void blockUser(int userId) {
-        userRepository.blockUser(userId);
-    }
-
-    @Override
-    public User findUser(int userId) {
-        return userRepository.findUser(userId);
-    }
-
-    @Override
-    public boolean loginUser(String email, String password) {
-        try {
-            User user = userRepository.getUserEmail(email);
-            if (user == null || !user.getPassword().equals(password)) {
-                System.out.println("Invalid email or password.");
-                return false;
-            }
-            activeUser = user;
-            System.out.println("User is successfully logged in.");
-            return true;
-        } catch (IllegalArgumentException e) {
-            System.out.println("Invalid email or password.");
-            return false;
+        // Преобразуем список в Map
+        for (User user : userList) {
+            userMap.put(user.getId(), user);  // Предполагаем, что у класса User есть метод getId()
         }
+
+        return userMap;
     }
 
-
-    @Override
-    public User registerUser(String email, String password) throws EmailValidateException, PasswordValidatorException {
-        if (!personValidator.isEmailValid(email)) {
-            System.out.println("Please check the email.");
-            return null;
-        }
-        if (!personValidator.isPasswordValid(password)) {
-            System.out.println("Please check the password.");
-            return null;
-        }
-        if (userRepository.isMailExist(email)) {
-            System.out.println("Email already exist.");
-            return null;
-        }
-        return userRepository.addUser(email, password);
+    // Метод для добавления пользователя
+    public void addUser(User user) {
+        userRepository.addUser(user);
     }
 
-    @Override
-    public boolean isUserAdmin() {
-        return activeUser.getRole() == Role.ADMIN;
-    }
-
-    @Override
-    public boolean isUserBlocked() {
-        return activeUser.getRole() == Role.BLOCKED;
-    }
-
-    @Override
-    public void logout() {
-        activeUser = null;
-    }
-
-    // Метод для установки activeUser в тестах
-    public void setActiveUser(User user) {
-        this.activeUser = user;
+    // Метод для создания аккаунта
+    public void createAccount(String currencyCode, double initialBalance) {
+        userRepository.createAccount(currencyCode, initialBalance);
     }
 }

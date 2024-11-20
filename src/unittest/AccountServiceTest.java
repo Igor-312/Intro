@@ -24,6 +24,7 @@ public class AccountServiceTest {
     void setUp() {
         AccountService.resetAccountIdCounter();
         accountRepo = new AccountRepository();
+        ((AccountRepository) accountRepo).clearAccounts(); // Очистка репозитория
         accountService = new AccountService(accountRepo);
 
         // Создание тестового пользователя
@@ -154,5 +155,14 @@ public class AccountServiceTest {
         });
 
         assertEquals("Withdrawal amount must be positive", exception.getMessage());
+    }
+
+    @Test
+    void testDeleteAccountNotFound() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            accountService.deleteAccount(3);
+        });
+
+        assertEquals("Account not found with ID: 3", exception.getMessage());
     }
 }
