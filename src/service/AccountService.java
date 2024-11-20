@@ -3,6 +3,7 @@ package service;
 import models.Account;
 import models.CurrencyCode;
 import repository.AccountRepository;
+import repository.TransactionRepository;
 
 import java.util.List;
 import java.util.Map;
@@ -10,15 +11,12 @@ import java.util.Map;
 public class AccountService implements AccountServiceInterface {
 
     private final AccountRepository accountRepository;
+    private final TransactionRepository transactionRepository;
 
-    // Конструктор по умолчанию
-    public AccountService() {
-        this.accountRepository = new AccountRepository();
-    }
-
-    // Конструктор с параметром
-    public AccountService(AccountRepository accountRepository) {
+    // Конструктор с двумя параметрами
+    public AccountService(AccountRepository accountRepository, TransactionRepository transactionRepository) {
         this.accountRepository = accountRepository;
+        this.transactionRepository = transactionRepository;
     }
 
     @Override

@@ -1,16 +1,16 @@
 package models;
 
 public class Account {
+    private static int accountIdCounter = 0; // Статический счетчик для генерации уникальных ID
     private int accountId;
     private CurrencyCode currency;
     private double balance;
     private User user;
 
     public Account(CurrencyCode currency, double balance) {
-        this.accountId = accountId++;
+        this.accountId = accountIdCounter++; // Уникальный идентификатор для каждого аккаунта
         this.currency = currency;
         this.balance = balance;
-        this.user = user;
     }
 
     @Override

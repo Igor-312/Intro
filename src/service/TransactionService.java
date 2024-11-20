@@ -3,6 +3,7 @@ package service;
 import models.Currency;
 import models.CurrencyCode;
 import models.Transaction;
+import models.TypeTransaction;
 import repository.TransactionRepository;
 
 import java.time.LocalDateTime;
@@ -31,7 +32,8 @@ public class TransactionService implements TransactionServiceInterface {
                 accountID,
                 amountOfMoney,
                 LocalDateTime.now(),
-                new Currency(CurrencyCode.USD, "US Dollar")
+                new Currency(CurrencyCode.USD, "US Dollar"),
+                TypeTransaction.CREDIT
         );
 
         transactionRepository.addTransaction(accountID, newTransaction);
@@ -48,7 +50,8 @@ public class TransactionService implements TransactionServiceInterface {
                 accountID,
                 -amountOfMoney,
                 LocalDateTime.now(),
-                new Currency(CurrencyCode.USD, "US Dollar")
+                new Currency(CurrencyCode.USD, "US Dollar"),
+                TypeTransaction.DEBIT
         );
 
         transactionRepository.addTransaction(accountID, withdrawalTransaction);
@@ -68,7 +71,8 @@ public class TransactionService implements TransactionServiceInterface {
                 0,
                 convertedAmount,
                 LocalDateTime.now(),
-                new Currency(currencyTo, currencyTo + " Currency")
+                new Currency(currencyTo, currencyTo + " Currency"),
+                TypeTransaction.EXCHANGE
         );
 
         transactionRepository.addTransaction(0, exchangeTransaction);

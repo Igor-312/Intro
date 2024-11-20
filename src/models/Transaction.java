@@ -5,12 +5,13 @@ import java.time.LocalDateTime;
 public class Transaction {
     private final int transactionId;
     private final int accountId;
-    private Enum type;
+    private TypeTransaction type; // Изменяем тип на TypeTransaction
     private final double amount;
     private final LocalDateTime date;
     private final Currency currency;
     private int userId;
 
+    // Конструктор без указания типа транзакции
     public Transaction(int transactionId, int accountId, double amount, LocalDateTime date, Currency currency) {
         this.transactionId = transactionId;
         this.accountId = accountId;
@@ -19,13 +20,14 @@ public class Transaction {
         this.currency = currency;
     }
 
-    public Transaction(int transactionId, int accountId, double amount, LocalDateTime date, Currency currency, int userId) {
+    // Конструктор с указанием типа транзакции
+    public Transaction(int transactionId, int accountId, double amount, LocalDateTime date, Currency currency, TypeTransaction type) {
         this.transactionId = transactionId;
         this.accountId = accountId;
         this.amount = amount;
         this.date = date;
         this.currency = currency;
-        this.userId = userId;
+        this.type = type;
     }
 
     @Override
@@ -49,11 +51,11 @@ public class Transaction {
         return accountId;
     }
 
-    public Enum getType() {
+    public TypeTransaction getType() {
         return type;
     }
 
-    public void setType(Enum type) {
+    public void setType(TypeTransaction type) {
         this.type = type;
     }
 
@@ -76,5 +78,4 @@ public class Transaction {
     public void setUserId(int userId) {
         this.userId = userId;
     }
-
 }
