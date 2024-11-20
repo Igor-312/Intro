@@ -96,7 +96,7 @@ public class UserService implements UserServiceInterface {
             // Если activeUser равен null, значит пользователь не авторизован.
             throw new IllegalStateException("User is not logged in.");
         }
-        return activeUser.getRole() != Role.BLOCKED ;
+        return activeUser.getRole() == Role.BLOCKED ;
     }
 
     @Override
@@ -115,12 +115,12 @@ public class UserService implements UserServiceInterface {
 
     // Метод doesAccountExist нужен для проверки существования счета
     // в системе через метод addTransaction в классе TransactionRepository
-    public boolean doesAccountExist(int accountID){
+ //   public boolean doesAccountExist(int accountID){
     // Получаем все счета пользователя
-    List<Account> accounts = getAccountsByUserId(user.getUserId()); // где userId — это ID текущего пользователя
-    // Проверяем, есть ли среди счетов счет с таким accountID
-    return accounts.stream()
-            .anyMatch(account -> account.getAccountId() == accountID); // Если хотя бы один счет с таким ID, возвращаем true
+//    List<Account> accounts = getAccountsByUserId(activeUser.getUserId()); // где userId — это ID текущего пользователя
+//    // Проверяем, есть ли среди счетов счет с таким accountID
+//    return accounts.stream()
+//            .anyMatch(account -> account.getAccountId() == accountID); // Если хотя бы один счет с таким ID, возвращаем true
 }
 
-}
+

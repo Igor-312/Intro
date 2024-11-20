@@ -25,9 +25,9 @@ public class TransactionRepository implements TransactionRepoInterface {
             throw new IllegalArgumentException("Account ID in transaction does not match the provided account ID.");
         }
         // Проверяем существование счета в системе (через UserService)
-        if (!userService.doesAccountExist(accountID)) { // Метод doesAccountExist   реализован в UserService
-            throw new IllegalArgumentException("Account ID does not exist in the system.");
-        }
+//        if (!accountService(accountID)) { // Метод doesAccountExist   реализован в UserService
+//            throw new IllegalArgumentException("Account ID does not exist in the system.");
+//        }
         // Проверка существования счета в transactionMap
         if (!transactionMap.containsKey(accountID)) {
             transactionMap.put(accountID, new ArrayList<>()); // Если счета нет в repository, создаем его

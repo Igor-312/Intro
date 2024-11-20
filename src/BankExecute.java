@@ -15,22 +15,22 @@ public class BankExecute {
 
         UserService userService = new UserService();
         AccountRepository accountRepository = new AccountRepository();
-        TransactionRepository transactionRepository = new TransactionRepository(userService );
+        TransactionRepository transactionRepository = new TransactionRepository(userService);
         CurrencyService currencyService = new CurrencyService();
+        AccountService accountService = new AccountService(accountRepository, transactionRepository);
 
         //  создаем TransactionService, передавая в него все зависимости
         TransactionService transactionService = new TransactionService(
-                null,  // Временно передаем null для accountService
+                accountService,
                 transactionRepository,
                 accountRepository,
                 currencyService
         );
 
         //  создаем AccountService, передавая ему уже инициализированный transactionService
-        AccountService accountService = new AccountService(transactionService, accountRepository);
 
 
-        ConsoleView consoleView = new ConsoleView(accountService,transactionService,userService,currencyService);
+        ConsoleView consoleView = new ConsoleView(accountService, transactionService, userService, currencyService);
 
         consoleView.run();
     }

@@ -22,13 +22,15 @@ import static models.CurrencyCode.*;
 public class AccountService implements AccountServiceInterface {
 
 
-    private final TransactionService transactionService;
+//    private final TransactionService transactionService;
     private final AccountRepository accountRepo;
+    private final TransactionRepository transactionRepository;
 
-    public AccountService(TransactionService transactionService, AccountRepository accountRepository) {
-        this.transactionService = transactionService; // Передаем через конструктор
+    public AccountService(AccountRepository accountRepository, TransactionRepository transactionRepository) {
+      //  this.transactionService = transactionService; // Передаем через конструктор
         this.accountRepo = accountRepository;
 
+        this.transactionRepository = transactionRepository;
     }
         // Получение аккаунта по ID
     @Override
@@ -74,7 +76,9 @@ public class AccountService implements AccountServiceInterface {
         String currencyCode = account.getCurrency().name();  // Используем name() для перечисления CurrencyCode
 
         // Получение транзакций через TransactionService
-        List<Transaction> transactions = transactionService.showHistory().get(accountId);
+       //TODO List<Transaction> transactions = transactionService.showHistory().get(accountId);
+
+        List<Transaction> transactions = transactionRepository.getTransactionsByAccountId(accountId);
 
         // Подготовка результата для отображения
         Map<String, Object> accountDetails = new HashMap<>();

@@ -39,7 +39,7 @@ public class AccountRepository implements AccountRepoInterface {
              accountsOfUser = new ArrayList<>();
         }
         accountsOfUser.add(account);
-
+        System.out.println("Account id: " + accountId);
         return account;
     }
 
