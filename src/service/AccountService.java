@@ -101,11 +101,6 @@ public class AccountService implements AccountServiceInterface {
     @Override
     public void createAccountUSD(User user) throws UserNotFoundException{
 
-        /*User user = userService.getActiveUser();
-        if (user == null) {
-            throw new UserNotFoundException(" User not found ");
-        }*/
-
         Account account = accountRepo.createAccount(user.getUserId(),USD, 0.0);
     }
 
@@ -113,21 +108,12 @@ public class AccountService implements AccountServiceInterface {
     @Override
     public void createAccountEUR(User user)throws UserNotFoundException {
 
-        /*User user = userService.getActiveUser();
-        if (user == null) {
-            throw new UserNotFoundException(" User not found ");
-        }*/
         Account account = accountRepo.createAccount(user.getUserId(),EUR, 0.0); // Инициализация с балансом 0
     }
 
     // Создание аккаунта в BTC
     @Override
     public void createAccountBTC(User user) throws UserNotFoundException {
-
-       /* User user = userService.getActiveUser();
-        if (user == null) {
-            throw new UserNotFoundException(" User not found ");
-        }*/
 
         accountRepo.createAccount(user.getUserId(),BTC,0.0);
     }
@@ -145,11 +131,6 @@ public class AccountService implements AccountServiceInterface {
 
     @Override
     public List<Account> myAccounts(User user) throws UserNotFoundException {
-
-        /*User user = userService.getActiveUser();
-        if (user == null) {
-            throw new UserNotFoundException(" User not found ");
-        }*/
 
         return accountRepo.userAccountsByUserId(user.getUserId());
 

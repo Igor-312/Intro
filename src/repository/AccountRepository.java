@@ -39,6 +39,7 @@ public class AccountRepository implements AccountRepoInterface {
              accountsOfUser = new ArrayList<>();
         }
         accountsOfUser.add(account);
+        System.out.println("Account id: " + accountId);
 
         return account;
     }
@@ -54,8 +55,15 @@ public class AccountRepository implements AccountRepoInterface {
 
     public List<Account> userAccountsByUserId (int userId){
 
-        List<Account> accountsOfUser = accounts.get(userId);
+        List<Account> accountsOfUser = accountList;
+
+        accountsOfUser.stream()
+                .filter(account -> account.getUserId() == userId)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(" Account not found "));
+
         return accountsOfUser;
+
 }
 
     // Получить все аккаунты
@@ -78,8 +86,17 @@ public class AccountRepository implements AccountRepoInterface {
     // Удалить аккаунт
     @Override
     public void deleteAccount(int accountId) {
-        accountList.remove(accountId);
-        // make it not possible to delete account with non 0 balance
+
+        accountList.stream()
+                .filter(account -> account.getAccountId() == accountId)
+                .filter(account -> account.getBalance() <= 0)
+                .findFirst()
+                .ifPresentOrElse(
+                        account -> accountList.remove(account), // Remove the account if found
+                        () -> { throw new IllegalArgumentException("Account not found or only account without money can be deleted"); } // Throw exception if no match
+                );
+
+        System.out.println("Account with id " + accountId + " deleted ");
     }
 
 }
