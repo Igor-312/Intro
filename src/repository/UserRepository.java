@@ -5,42 +5,41 @@ import models.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-public class UserRepository implements UserRepoInterface{
+public class UserRepository implements UserRepoInterface {
     public static Map<Integer, User> users = new HashMap<>();
     private static int userIdCounter = 1;
     private AccountRepository accountRepository;
 
     public UserRepository() {
-        this.accountRepository = accountRepository;
+        this.accountRepository = new AccountRepository(); // Инициализация accountRepository
         addDefaultUsers();
         addTestAdmin();
-
     }
 
-    public void addDefaultUsers(){
-        users.put(1, new User("Masha123@gmail.com", "Masha123@gmail.com"));//id 0
+    public void addDefaultUsers() {
+        users.put(1, new User("Masha123@gmail.com", "Masha123@gmail.com")); // id 1
     }
 
-    public void addTestAdmin(){
-        User admin = new User("Neshyna123@gmail.com", "Neshyna123@gmail.com");//id 1
+    public void addTestAdmin() {
+        User admin = new User("Neshyna123@gmail.com", "Neshyna123@gmail.com");
         admin.setRole(Role.ADMIN);
-        users.put(2,admin);
+        users.put(2, admin); // id 2
     }
 
-
-    public User addUser(String email, String password){
-
+    public User addUser(String email, String password) {
         if (isMailExist(email)) {
             throw new IllegalArgumentException("Email already exists.");
         }
-        User newUser = new User(email,password);
-        users.put(userIdCounter++,newUser);
+        User newUser = new User(email, password);
+        newUser.setUserId(userIdCounter++);
+        users.put(newUser.getUserId(), newUser);
         return newUser;
     }
 
     public boolean isMailExist(String email) {
-       return users.values().stream()
+        return users.values().stream()
                 .map(User::getEmail)
                 .anyMatch(existEmail -> existEmail.equals(email));
     }
@@ -52,8 +51,7 @@ public class UserRepository implements UserRepoInterface{
                 .orElseThrow(() -> new IllegalArgumentException("Email not found."));
     }
 
-    public void giveAdminPermissions(int userId){
-
+    public void giveAdminPermissions(int userId) {
         users.values().stream()
                 .filter(user -> user.getUserId() == userId)
                 .findFirst()
@@ -65,23 +63,23 @@ public class UserRepository implements UserRepoInterface{
                                 System.out.println("User is already Admin");
                             }
                         },
-                () -> {throw new IllegalArgumentException("User not found");}
+                        () -> { throw new IllegalArgumentException("User not found"); }
                 );
     }
 
-    public void blockUser(int userId){
+    public void blockUser(int userId) {
         users.values().stream()
                 .filter(user -> user.getUserId() == userId)
                 .findFirst()
                 .ifPresentOrElse(
                         user -> user.setRole(Role.BLOCKED),
-                        () -> {throw new IllegalArgumentException("User not found");}
+                        () -> { throw new IllegalArgumentException("User not found"); }
                 );
     }
 
     public User findUser(int userId) {
         return users.values().stream()
-                .filter(user -> user.getUserId() == (userId))
+                .filter(user -> user.getUserId() == userId)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("User not found."));
     }
@@ -92,11 +90,8 @@ public class UserRepository implements UserRepoInterface{
 
     @Override
     public List<Account> getAccountsByUserId(int userId) {
-        List<Account> userAccounts = users.values().stream()
-                .filter(user -> user.getUserId() == userId)
-                .map(user -> user.getUserAccounts())
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("User not found."));
+        User user = findUser(userId);
+        List<Account> userAccounts = user.getUserAccounts();
 
         if (userAccounts == null) {
             throw new IllegalStateException("The list of user accounts is null");
@@ -105,12 +100,11 @@ public class UserRepository implements UserRepoInterface{
     }
 
     public Account createAccountForUser(int userId, CurrencyCode currency, double initialBalance) {
-
         User user = users.get(userId);
         if (user == null) {
             throw new IllegalArgumentException("User not found.");
         }
-        Account newAccount = accountRepository.createAccount(currency,initialBalance);
+        Account newAccount = accountRepository.createAccountForUser(userId, currency, initialBalance);
         user.addUserAccount(newAccount);
         return newAccount;
     }

@@ -11,6 +11,10 @@ public class CurrencyService implements CurrencyServiceInterface {
         this.currencyRepo = new CurrencyRepo();
     }
 
+    // Добавим конструктор, который принимает CurrencyRepo
+    public CurrencyService(CurrencyRepo currencyRepo) {
+        this.currencyRepo = currencyRepo;
+    }
 
     @Override
     public Map<String, Double> showExchangeRates() {

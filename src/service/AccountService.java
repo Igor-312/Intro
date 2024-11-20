@@ -1,108 +1,78 @@
 package service;
 
 import models.Account;
-
-import repository.AccountRepoInterface;
+import models.CurrencyCode;
 import repository.AccountRepository;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static models.CurrencyCode.*;
-
 public class AccountService implements AccountServiceInterface {
 
-    // Репозиторий для работы с аккаунтами
-    private AccountRepoInterface accountRepo;
+    private final AccountRepository accountRepository;
 
-    // Конструктор, принимающий репозиторий
+    // Конструктор по умолчанию
     public AccountService() {
-        this.accountRepo = new AccountRepository();
+        this.accountRepository = new AccountRepository();
     }
 
-    // Получение аккаунта по ID
+    // Конструктор с параметром
+    public AccountService(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
+    }
+
+    @Override
+    public void createAccountUSD(int userId) {
+        accountRepository.createAccountForUser(userId, CurrencyCode.USD, 0.0);
+    }
+
+    @Override
+    public void createAccountEUR(int userId) {
+        accountRepository.createAccountForUser(userId, CurrencyCode.EUR, 0.0);
+    }
+
+    @Override
+    public void createAccountBTC(int userId) {
+        accountRepository.createAccountForUser(userId, CurrencyCode.BTC, 0.0);
+    }
+
     @Override
     public Account getAccountById(int accountId) {
-        Account account = accountRepo.getAccountById(accountId);
-        if (account == null) {
-            throw new IllegalArgumentException("Account not found with ID: " + accountId);
-        }
-        return account;
+        return accountRepository.getAccountById(accountId);
     }
 
-    // Пополнение баланса
     @Override
     public void deposit(int accountId, double amount) {
         if (amount <= 0) {
             throw new IllegalArgumentException("Deposit amount must be positive");
         }
-        Account account = getAccountById(accountId);
-        accountRepo.updateAccountBalance(accountId, amount); // Пополнение счета
+        accountRepository.updateAccountBalance(accountId, amount);
     }
 
-    // Снятие средств
     @Override
     public void withdraw(int accountId, double amount) {
         if (amount <= 0) {
             throw new IllegalArgumentException("Withdrawal amount must be positive");
         }
-        Account account = getAccountById(accountId);
+        Account account = accountRepository.getAccountById(accountId);
         if (account.getBalance() < amount) {
             throw new IllegalArgumentException("Insufficient balance");
         }
-        accountRepo.updateAccountBalance(accountId, -amount); // Снятие средств с баланса
+        accountRepository.updateAccountBalance(accountId, -amount);
     }
 
-    // Удаление аккаунта
     @Override
     public void deleteAccount(int accountId) {
-        Account account = getAccountById(accountId);
-        if (account != null) {
-            accountRepo.deleteAccount(accountId); // Удаление аккаунта
-        } else {
-            throw new IllegalArgumentException("Account not found with ID: " + accountId);
-        }
+        accountRepository.deleteAccountById(accountId);
     }
 
-    // Создание аккаунта в USD
     @Override
-    public void createAccountUSD() {
-        Account account = accountRepo.createAccount(USD, 0.0);
+    public Map<Integer, List<Account>> showBalance(int userId) {
+        return accountRepository.getAccountsByUserId(userId);
     }
 
-    // Создание аккаунта в EUR
-    @Override
-    public void createAccountEUR() {
-        Account account = accountRepo.createAccount(EUR, 0.0); // Инициализация с балансом 0
-    }
-
-    // Создание аккаунта в BTC
-    @Override
-    public void createAccountBTC() {
-        Account account = accountRepo.createAccount(BTC, 0.0);
-    }
-
-    // Метод для генерации уникального ID аккаунта
-    private static int accountIdCounter = 1; // Статический счетчик для уникальных ID
-
-    // Показать баланс для аккаунта
-    @Override
-    public Map<Integer, List<Account>> showBalance(int accountId) {
-        Map<Integer, List<Account>> result = new HashMap<>();
-        Account account = getAccountById(accountId);
-        if (account != null) {
-            result.put(accountId, List.of(account)); // Возвращаем только один аккаунт
-        }
-        return result;
-    }
-
-    // Показать все аккаунты
     @Override
     public Map<Integer, List<Account>> myAccounts() {
-        Map<Integer, List<Account>> allAccounts = new HashMap<>();
-        List<Account> accounts = accountRepo.getAllAccount();
-        allAccounts.put(0, accounts);
-        return allAccounts;
+        return accountRepository.getAllAccounts();
     }
 }

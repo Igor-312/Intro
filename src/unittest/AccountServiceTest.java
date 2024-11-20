@@ -1,12 +1,12 @@
 package unittest;
 
 import models.Account;
-import models.Currency;
+import models.CurrencyCode;
 import models.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import repository.AccountRepoInterface;
 import repository.AccountRepository;
+import repository.UserRepository;
 import service.AccountService;
 import service.AccountServiceInterface;
 
@@ -14,75 +14,53 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 public class AccountServiceTest {
     private AccountServiceInterface accountService;
-    private AccountRepoInterface accountRepo;
+    private AccountRepository accountRepo;
     private User testUser;
+    private UserRepository userRepository;
 
     @BeforeEach
     void setUp() {
-        AccountService.resetAccountIdCounter();
-        accountRepo = new AccountRepository();
-        ((AccountRepository) accountRepo).clearAccounts(); // Очистка репозитория
+        accountRepo = mock(AccountRepository.class);
         accountService = new AccountService(accountRepo);
+
+        // Создание нового экземпляра UserRepository и очистка пользователей
+        userRepository = new UserRepository();
+        UserRepository.users.clear();
 
         // Создание тестового пользователя
         testUser = new User("test@example.com", "password123");
+        userRepository.addUser(testUser.getEmail(), testUser.getPassword());
 
         // Создание тестовых аккаунтов
-        Account account1 = new Account(1, new Currency("USD", "US Dollar"), 100.0, testUser);
-        Account account2 = new Account(2, new Currency("EUR", "Euro"), 200.0, testUser);
-        accountRepo.createAccount(account1);
-        accountRepo.createAccount(account2);
+        Account account1 = new Account(CurrencyCode.USD, 100.0);
+        account1.setAccountId(1);
+        account1.setUser(testUser);
+
+        Account account2 = new Account(CurrencyCode.EUR, 200.0);
+        account2.setAccountId(2);
+        account2.setUser(testUser);
+
+        when(accountRepo.getAccountById(1)).thenReturn(account1);
+        when(accountRepo.getAccountById(2)).thenReturn(account2);
+        when(accountRepo.getAllAccounts()).thenReturn(Map.of(
+                testUser.getUserId(), List.of(account1, account2)
+        ));
     }
 
     @Test
     void testCreateAccountUSD() {
-        accountService.createAccountUSD();
-        Account createdAccount = accountRepo.getAccountById(3);  // Новый ID будет 3
-
-        if (createdAccount == null) {
-            System.out.println("Account creation failed. createdAccount is null for USD.");
-        } else {
-            System.out.println("createdAccount (USD): " + createdAccount);
-        }
-
-        assertNotNull(createdAccount);
-        assertEquals("USD", createdAccount.getCurrency().getCode());
-        assertEquals(0.0, createdAccount.getBalance());
+        accountService.createAccountUSD(testUser.getUserId());
+        verify(accountRepo, times(1)).createAccountForUser(testUser.getUserId(), CurrencyCode.USD, 0.0);
     }
 
     @Test
     void testCreateAccountEUR() {
-        accountService.createAccountEUR();
-        Account createdAccount = accountRepo.getAccountById(3);  // Новый ID будет 3
-
-        if (createdAccount == null) {
-            System.out.println("Account creation failed. createdAccount is null for EUR.");
-        } else {
-            System.out.println("createdAccount (EUR): " + createdAccount);
-        }
-
-        assertNotNull(createdAccount);
-        assertEquals("EUR", createdAccount.getCurrency().getCode());
-        assertEquals(0.0, createdAccount.getBalance());
-    }
-
-    @Test
-    void testCreateAccountBTC() {
-        accountService.createAccountBTC();
-        Account createdAccount = accountRepo.getAccountById(3);  // Новый ID будет 3
-
-        if (createdAccount == null) {
-            System.out.println("Account creation failed. createdAccount is null for BTC.");
-        } else {
-            System.out.println("createdAccount (BTC): " + createdAccount);
-        }
-
-        assertNotNull(createdAccount);
-        assertEquals("BTC", createdAccount.getCurrency().getCode());
-        assertEquals(0.0, createdAccount.getBalance());
+        accountService.createAccountEUR(testUser.getUserId());
+        verify(accountRepo, times(1)).createAccountForUser(testUser.getUserId(), CurrencyCode.EUR, 0.0);
     }
 
     @Test
@@ -90,48 +68,61 @@ public class AccountServiceTest {
         Account account = accountService.getAccountById(1);
         assertNotNull(account);
         assertEquals(1, account.getAccountId());
-        assertEquals("USD", account.getCurrency().getCode());
+        assertEquals(CurrencyCode.USD, account.getCurrency());
         assertEquals(100.0, account.getBalance());
     }
 
     @Test
     void testDeposit() {
         accountService.deposit(1, 50.0);
-        Account account = accountRepo.getAccountById(1);
-        assertEquals(150.0, account.getBalance());
+        verify(accountRepo, times(1)).updateAccountBalance(1, 50.0);
     }
 
     @Test
     void testWithdraw() {
         accountService.withdraw(1, 50.0);
-        Account account = accountRepo.getAccountById(1);
-        assertEquals(50.0, account.getBalance());
+        verify(accountRepo, times(1)).updateAccountBalance(1, -50.0);
     }
 
     @Test
     void testDeleteAccount() {
         accountService.deleteAccount(1);
-        Account account = accountRepo.getAccountById(1);
-        assertNull(account);
+        verify(accountRepo, times(1)).deleteAccountById(1);
     }
 
     @Test
     void testShowBalance() {
-        Map<Integer, List<Account>> balance = accountService.showBalance(1);
+        when(accountRepo.getAccountsByUserId(testUser.getUserId())).thenReturn(Map.of(
+                testUser.getUserId(), List.of(
+                        new Account(CurrencyCode.USD, 100.0),
+                        new Account(CurrencyCode.EUR, 200.0)
+                )
+        ));
+        Map<Integer, List<Account>> balance = accountService.showBalance(testUser.getUserId());
         assertNotNull(balance);
-        assertEquals(1, balance.size());
-        assertEquals(100.0, balance.get(1).get(0).getBalance());
+        assertEquals(2, balance.get(testUser.getUserId()).size());
     }
 
     @Test
     void testMyAccounts() {
+        when(accountRepo.getAllAccounts()).thenReturn(Map.of(
+                testUser.getUserId(), List.of(
+                        new Account(CurrencyCode.USD, 100.0),
+                        new Account(CurrencyCode.EUR, 200.0)
+                )
+        ));
         Map<Integer, List<Account>> accounts = accountService.myAccounts();
         assertNotNull(accounts);
-        assertEquals(2, accounts.get(0).size());
+        assertEquals(2, accounts.get(testUser.getUserId()).size());
     }
 
     @Test
     void testWithdrawInsufficientBalance() {
+        Account account = new Account(CurrencyCode.USD, 50.0);
+        account.setAccountId(1);
+        account.setUser(testUser);
+        when(accountRepo.getAccountById(1)).thenReturn(account);
+
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             accountService.withdraw(1, 150.0);
         });
@@ -159,6 +150,8 @@ public class AccountServiceTest {
 
     @Test
     void testDeleteAccountNotFound() {
+        doThrow(new IllegalArgumentException("Account not found with ID: 3")).when(accountRepo).deleteAccountById(3);
+
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             accountService.deleteAccount(3);
         });

@@ -12,7 +12,7 @@ public class TransactionRepository implements TransactionRepoInterface {
     private final Map<Integer, List<Transaction>> transactionMap = new HashMap<>();
     private UserService userService;
 
-    public TransactionRepository() {
+    public TransactionRepository(UserService userService) {
         this.userService = userService;
     }
 
@@ -39,9 +39,8 @@ public class TransactionRepository implements TransactionRepoInterface {
         return transactionMap.get(accountId);
     }
 
-   @Override
+    @Override
     public List<Transaction> getTransactionsByType(Enum type) {
-
         if (type == null) {
             throw new IllegalArgumentException("Transaction type cannot be null.");
         }
@@ -60,7 +59,6 @@ public class TransactionRepository implements TransactionRepoInterface {
         }
         return filteredTransactions;
     }
-
 
     @Override
     public Map<Integer, List<Transaction>> getTransactionsByUserId(int userId) {
@@ -86,7 +84,7 @@ public class TransactionRepository implements TransactionRepoInterface {
     }
 
     @Override
-    public double getAccountBalance(int accountID) { // текущий баланс счета. реализация в TransactionService.
+    public double getAccountBalance(int accountID) {
         if (!transactionMap.containsKey(accountID)) {
             throw new IllegalArgumentException("Account ID not found in the transaction repository.");
         }
@@ -94,7 +92,6 @@ public class TransactionRepository implements TransactionRepoInterface {
         double balance = 0.0;
         List<Transaction> transactions = getTransactionsByAccountId(accountID);
         for (Transaction transaction : transactions) {
-            // вычитание для снятия, добавление для депозита
             if (transaction.getType() == TypeTransaction.CREDIT) {
                 balance += transaction.getAmount();
             } else if (transaction.getType() == TypeTransaction.DEBIT) {
@@ -111,7 +108,5 @@ public class TransactionRepository implements TransactionRepoInterface {
             allTransactions.addAll(transactions);
         }
         return allTransactions;
-
-
     }
 }

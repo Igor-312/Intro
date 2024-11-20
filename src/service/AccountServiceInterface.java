@@ -1,4 +1,5 @@
 package service;
+
 import java.util.Map;
 import models.Account;
 
@@ -6,16 +7,16 @@ import java.util.List;
 
 public interface AccountServiceInterface {
 
-    void createAccountUSD();
+    void createAccountUSD(int userId);
 
-    void createAccountEUR();
+    void createAccountEUR(int userId);
 
-    void createAccountBTC();
+    void createAccountBTC(int userId);
 
     Map<Integer, List<Account>> showBalance(int accountID);
 
     Map<Integer, List<Account>> myAccounts();
-  
+
     // Получение аккаунта по ID
     Account getAccountById(int accountId);
 

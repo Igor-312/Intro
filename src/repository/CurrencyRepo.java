@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CurrencyRepo implements CurrencyRepoInterface {
-    private Map<String, Double> exchangeRates;
+    private final Map<String, Double> exchangeRates;
 
     public CurrencyRepo() {
         this.exchangeRates = new HashMap<>();
