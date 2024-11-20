@@ -1,24 +1,33 @@
 package models;
 
+import java.util.Objects;
+
 public class Currency {
     private final CurrencyCode currencyCode;
-    private String name;
 
-    public Currency(CurrencyCode currencyCode, String name) {
+    public Currency(CurrencyCode currencyCode) {
         this.currencyCode = currencyCode;
-
-        this.name = name;
     }
 
-    public CurrencyCode getCode() {
+    public CurrencyCode getCurrencyCode() {
         return currencyCode;
     }
 
-    public String getName() {
-        return name;
+    @Override
+    public String toString() {
+        return "currency" + currencyCode;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Currency currency = (Currency) o;
+        return currencyCode == currency.currencyCode;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(currencyCode);
     }
 }

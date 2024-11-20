@@ -15,7 +15,7 @@ public class BankExecute {
 
         UserService userService = new UserService();
         AccountRepository accountRepository = new AccountRepository();
-        TransactionRepository transactionRepository = new TransactionRepository(userService);
+        TransactionRepository transactionRepository = new TransactionRepository();
         CurrencyService currencyService = new CurrencyService();
         AccountService accountService = new AccountService(accountRepository, transactionRepository);
 
@@ -24,7 +24,8 @@ public class BankExecute {
                 accountService,
                 transactionRepository,
                 accountRepository,
-                currencyService
+                currencyService,
+                userService
         );
 
         //  создаем AccountService, передавая ему уже инициализированный transactionService

@@ -3,6 +3,7 @@ package repository;
 import models.Account;
 import models.Transaction;
 import models.TypeTransaction;
+import service.AccountService;
 import service.UserService;
 
 import java.util.*;
@@ -10,11 +11,7 @@ import java.util.*;
 public class TransactionRepository implements TransactionRepoInterface {
 
     private final Map<Integer, List<Transaction>> transactionMap = new HashMap<>();
-    private UserService userService;
-
-    public TransactionRepository(UserService userService) {
-        this.userService = userService;
-    }
+    private AccountService accountService;
 
     @Override
     public void addTransaction(int accountID, Transaction transaction) {
@@ -63,14 +60,14 @@ public class TransactionRepository implements TransactionRepoInterface {
     }
 
 
-    @Override
+   /* @Override
     public Map<Integer, List<Transaction>> getTransactionsByUserId(int userId) {
         if (userId <= 0) {
             throw new IllegalArgumentException("User ID must be greater than zero.");
         }
 
         Map<Integer, List<Transaction>> userTransactions = new HashMap<>();
-        List<Account> userAccounts = userService.getAccountsByUserId(userId);
+        List<Account> userAccounts = accountService.listOfUserAccountsByUserId(userId);
 
         if (userAccounts.isEmpty()) {
             throw new IllegalArgumentException("No accounts found for the provided user ID.");
@@ -84,7 +81,7 @@ public class TransactionRepository implements TransactionRepoInterface {
         }
 
         return userTransactions;
-    }
+    }*/
 
     @Override
     public double getAccountBalance(int accountID) { // текущий баланс счета. реализация в TransactionService.

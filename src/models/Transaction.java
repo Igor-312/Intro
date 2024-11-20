@@ -13,12 +13,13 @@ public class Transaction {
     private Enum CurrencyCode;
 
 
-    public Transaction(int transactionId, int accountId, double amount, LocalDateTime date, Currency currency) {
+    public Transaction(int transactionId, int accountId, double amount, LocalDateTime date, Currency currency,int userId) {
         this.transactionId = transactionId;
         this.accountId = accountId;
         this.amount = amount;
         this.date = date;
         this.currency = currency;
+        this.userId = userId;
     }
 
     @Override
@@ -26,7 +27,6 @@ public class Transaction {
         return "Transaction{" +
                 "transactionId=" + transactionId +
                 ", accountId=" + accountId +
-                ", type=" + type +
                 ", amount=" + amount +
                 ", date=" + date +
                 ", currency=" + currency +
