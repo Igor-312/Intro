@@ -16,7 +16,6 @@ public class UserService implements UserServiceInterface {
 
     private final UserRepository userRepository;
     public User activeUser;
-    public User getActiveUser;
     private User user;
     private PersonValidate personValidator;
 

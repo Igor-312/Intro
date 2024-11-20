@@ -91,9 +91,6 @@ public class TransactionService implements TransactionServiceInterface {
         // Добавление транзакции в репозиторий
         transactionRepository.addTransaction(accountID, withdrawalTransaction);
         System.out.println("Successfully withdrew " + amountOfMoney + " from the account ID: " + accountID);
-
-
-
     }
 
     // Метод для получения курса обмена

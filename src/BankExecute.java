@@ -4,13 +4,15 @@ import service.AccountService;
 import service.CurrencyService;
 import service.TransactionService;
 import service.UserService;
+import utils.UserNotFoundException;
 import utils.validatorExeptions.EmailValidateException;
 import utils.validatorExeptions.PasswordValidatorException;
 import view.ConsoleView;
 
 public class BankExecute {
-    public static void main(String[] args) throws EmailValidateException, PasswordValidatorException {
-        // Создаем все необходимые объекты
+
+    public static void main(String[] args) throws EmailValidateException, PasswordValidatorException, UserNotFoundException {
+
         UserService userService = new UserService();
         AccountRepository accountRepository = new AccountRepository();
         TransactionRepository transactionRepository = new TransactionRepository(userService );

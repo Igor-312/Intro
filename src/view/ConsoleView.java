@@ -10,6 +10,7 @@ import service.AccountService;
 import service.TransactionService;
 import service.UserService;
 import service.CurrencyService;
+import utils.UserNotFoundException;
 import utils.validatorExeptions.EmailValidateException;
 import utils.validatorExeptions.PasswordValidatorException;
 
@@ -39,11 +40,11 @@ public class ConsoleView {
         scanner.nextLine();
     }
 
-    public void run() throws EmailValidateException, PasswordValidatorException {
+    public void run() throws EmailValidateException, PasswordValidatorException, UserNotFoundException {
         showLoginPage();
     }
 
-    private void showLoginPage() throws EmailValidateException, PasswordValidatorException {
+    private void showLoginPage() throws EmailValidateException, PasswordValidatorException, UserNotFoundException {
         while (true) {
 
             System.out.println("Welcome!");
@@ -63,7 +64,7 @@ public class ConsoleView {
         }
     }
 
-    private void handleLoginPageChoice(int input) throws EmailValidateException, PasswordValidatorException {
+    private void handleLoginPageChoice(int input) throws EmailValidateException, PasswordValidatorException, UserNotFoundException {
         switch (input) {
             case 1:
                 //authorization
@@ -144,7 +145,7 @@ public class ConsoleView {
         }
     }
 
-    private void showHomePage() {
+    private void showHomePage() throws UserNotFoundException {
         while (true) {
 
             System.out.println("Menu:");
@@ -164,7 +165,7 @@ public class ConsoleView {
         }
     }
 
-    private void handleShowHomePageChoice(int input) {
+    private void handleShowHomePageChoice(int input) throws UserNotFoundException {
         switch (input) {
             case 1:
                 showUserMenu();
@@ -186,7 +187,7 @@ public class ConsoleView {
         }
     }
 
-    private void showUserMenu() {
+    private void showUserMenu() throws UserNotFoundException {
         while (true) {
             System.out.println("User menu:");
             System.out.println("1. Create account USD");
@@ -213,13 +214,14 @@ public class ConsoleView {
         }
     }
 
-    private void handleUserMenuChoice(int input) {
+    private void handleUserMenuChoice(int input) throws UserNotFoundException {
 
         switch (input) {
             case 1:
 
                 System.out.println("Create account USD");
-                accountService.createAccountUSD();
+                User currentUser = userService.getActiveUser();
+                accountService.createAccountBTC(currentUser);
                 System.out.println("USD account created");
                 waitRead();
                 break;
@@ -227,7 +229,8 @@ public class ConsoleView {
             case 2:
 
                 System.out.println("Create account EUR");
-                accountService.createAccountEUR();
+                currentUser = userService.getActiveUser();
+                accountService.createAccountBTC(currentUser);
                 System.out.println("EUR account created");
                 waitRead();
                 break;
@@ -235,7 +238,8 @@ public class ConsoleView {
             case 3:
 
                 System.out.println("Create account BTC");
-                accountService.createAccountBTC();
+                currentUser = userService.getActiveUser();
+                accountService.createAccountBTC(currentUser);
                 System.out.println("BTC account created");
                 waitRead();
                 break;
@@ -344,7 +348,8 @@ public class ConsoleView {
             case 11:
 
                 System.out.println("My accounts");
-                Map<Integer, List<Account>> myAccounts = accountService.myAccounts();
+                currentUser = userService.getActiveUser();
+                List<Account> myAccounts = accountService.myAccounts(currentUser);
                 System.out.println(myAccounts);
 
                 waitRead();

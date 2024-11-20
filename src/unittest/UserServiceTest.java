@@ -26,8 +26,8 @@ public class UserServiceTest {
     @BeforeEach
     void setUp() {
         users = new HashMap<>();
-        users.put(1, new User( "Masha123@gmail.com", "Masha123@gmail.com"));
-        users.put(2, new User( "Neshyna123@gmail.com", "Neshyna123@gmail.com"));
+        users.put(1, new User( "Masha123@gmail.com", "Masha123@gmail.com",88));
+        users.put(2, new User( "Neshyna123@gmail.com", "Neshyna123@gmail.com",99));
     }
 
     @ParameterizedTest
@@ -80,21 +80,21 @@ public class UserServiceTest {
 
     @Test
     public void testGiveAdminPermissions(){
-        User user1 = new User("User1@example.com", "User1@example.com");
+        User user1 = new User("User1@example.com", "User1@example.com",78);
         userService.giveAdminPermissions(3);//userId 3 as well as we already have users with id 1 and 2
         assertEquals(Role.ADMIN, user1.getRole());
     }
 
     @Test
     public void testBlockUser(){
-        User user = new User("User2@example.com", "User2@example.com");
+        User user = new User("User2@example.com", "User2@example.com",56);
         userService.blockUser(3);//userId 3 as well as we already have users with id 1 and 2
         assertEquals(Role.BLOCKED, user.getRole());
     }
 
     @Test
     public void testFindUser(){
-        User user = new User("Masha123@gmail.com", "Masha123@gmail.com");
+        User user = new User("Masha123@gmail.com", "Masha123@gmail.com",34);
         userService.findUser(1);
         assertNotNull(userService.findUser(1));
         assertEquals("Masha123@gmail.com",user.getEmail());
@@ -109,14 +109,14 @@ public class UserServiceTest {
 
     @Test
     public void testIsUserAdmin_WhenAdmin(){
-        User user = new User("Neshyna123@gmail.com", "Neshyna123@gmail.com");
+        User user = new User("Neshyna123@gmail.com", "Neshyna123@gmail.com",54);
         user = activeUser;
         assertTrue(userService.isUserAdmin());
     }
 
     @Test
     public void testIsUserAdmin_WhenNotAdmin(){
-        User user = new User("Masha123@gmail.com", "Masha123@gmail.com");
+        User user = new User("Masha123@gmail.com", "Masha123@gmail.com",55);
         user = activeUser;
         assertFalse(userService.isUserAdmin());
     }
