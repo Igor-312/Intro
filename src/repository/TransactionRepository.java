@@ -3,15 +3,16 @@ package repository;
 import models.Account;
 import models.Transaction;
 import models.TypeTransaction;
+import service.UserService;
 
 import java.util.*;
 
 public class TransactionRepository implements TransactionRepoInterface {
 
     private final Map<Integer, List<Transaction>> transactionMap = new HashMap<>();
-    private UserRepoInterface userAccountRepo ;
+    private final UserService userAccountRepo;
 
-    public TransactionRepository() {
+    public TransactionRepository(UserService userAccountRepo) {
         this.userAccountRepo = userAccountRepo;
     }
 
@@ -31,7 +32,6 @@ public class TransactionRepository implements TransactionRepoInterface {
 
     @Override
     public List<Transaction> getTransactionsByType(Enum type) {
-
         List<Transaction> filteredTransactions = new ArrayList<>();
         if (type instanceof TypeTransaction) {
             for (List<Transaction> transactions : transactionMap.values()) {
@@ -44,7 +44,6 @@ public class TransactionRepository implements TransactionRepoInterface {
         }
         return filteredTransactions;
     }
-
 
     @Override
     public Map<Integer, List<Transaction>> getTransactionsByUserId(int userId) {
@@ -62,11 +61,10 @@ public class TransactionRepository implements TransactionRepoInterface {
     }
 
     @Override
-    public double getAccountBalance(int accountID) { // текущий баланс счета. реализация в TransactionService.
+    public double getAccountBalance(int accountID) {
         double balance = 0.0;
         List<Transaction> transactions = getTransactionsByAccountId(accountID);
         for (Transaction transaction : transactions) {
-            //  вычитание для снятия, добавление для депозита
             if (transaction.getType() == TypeTransaction.CREDIT) {
                 balance += transaction.getAmount();
             } else if (transaction.getType() == TypeTransaction.DEBIT) {
@@ -83,8 +81,7 @@ public class TransactionRepository implements TransactionRepoInterface {
             allTransactions.addAll(transactions);
         }
         return allTransactions;
-
-
     }
+} // Закрывающая скобка для класса
 
-}
+// Убедитесь, что после этой строки нет никаких лишних символов или текста
