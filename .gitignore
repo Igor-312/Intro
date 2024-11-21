@@ -6,8 +6,8 @@ out/
 
 .idea/
 *.iml
-target
-
+target/
+lib/
 ### Eclipse ###
 .apt_generated
 .classpath
