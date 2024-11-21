@@ -12,9 +12,9 @@ public interface TransactionRepoInterface {
 
     List<Transaction> getTransactionsByAccountId(int accountId);
 
-    List<Transaction> getTransactionsByType(Enum type);
+    /*List<Transaction> getTransactionsByType(Enum type);*/
 
-    double getAccountBalance(int accountID);
+    /*double getAccountBalance(int accountID);*/
 
     List<Transaction> getAllTransactions();
 

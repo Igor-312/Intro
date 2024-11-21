@@ -41,7 +41,7 @@ public class TransactionRepository implements TransactionRepoInterface {
         return transactionMap.get(accountId);
     }
 
-   @Override
+    /*@Override
     public List<Transaction> getTransactionsByType(Enum type) {
         if (type == null) {
             throw new IllegalArgumentException("Transaction type cannot be null.");
@@ -57,7 +57,7 @@ public class TransactionRepository implements TransactionRepoInterface {
 
         }
         return filteredTransactions;
-    }
+    }*/
 
 
    /* @Override
@@ -83,7 +83,7 @@ public class TransactionRepository implements TransactionRepoInterface {
         return userTransactions;
     }*/
 
-    @Override
+   /* @Override
     public double getAccountBalance(int accountID) { // текущий баланс счета. реализация в TransactionService.
         if (!transactionMap.containsKey(accountID)) {
             throw new IllegalArgumentException("Account ID not found in the transaction repository.");
@@ -114,7 +114,7 @@ public class TransactionRepository implements TransactionRepoInterface {
             }
         }
         return balance;
-    }
+    }*/
 
     @Override
     public List<Transaction> getAllTransactions() {
@@ -127,5 +127,6 @@ public class TransactionRepository implements TransactionRepoInterface {
 
 
     public void save(Transaction exchangeTransaction) {
+
     }
 }
