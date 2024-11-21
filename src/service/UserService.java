@@ -1,127 +1,112 @@
 package service;
 
 import models.Account;
-import models.Role;
 import models.User;
+import models.User.Role;
 import repository.UserRepository;
-import utils.PersonValidate;
-import utils.validatorExeptions.EmailValidateException;
-import utils.validatorExeptions.PasswordValidatorException;
+import repository.UserRepoInterface;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
-public class UserService implements UserServiceInterface {
+public class UserService implements UserRepoInterface {
 
+    private final Map<Integer, User> users;
     private final UserRepository userRepository;
-    public User activeUser;
-    private User user;
-    private PersonValidate personValidator;
+    private int userIdCounter;
 
-    public UserService() {
-        this.userRepository = new UserRepository();
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+        this.users = new HashMap<>();
+        this.userIdCounter = 1;
     }
 
     @Override
-    public Map<Integer, User> allUsers() {
-        Map<Integer,User> allUsers = userRepository.allUsers();
-        return allUsers;
+    public void addDefaultUsers() {
+        users.put(1, new User("Masha123@gmail.com", "Masha123@gmail.com", userIdCounter++));
+        users.put(2, new User("Neshyna123@gmail.com", "Neshyna123@gmail.com", userIdCounter++));
+    }
+
+    @Override
+    public User addUser(String email, String password) {
+        if (isMailExist(email)) {
+            throw new IllegalArgumentException("Email already exists.");
+        }
+        User newUser = new User(email, password, userIdCounter++);
+        users.put(newUser.getUserId(), newUser);
+        return newUser;
+    }
+
+    @Override
+    public boolean isMailExist(String email) {
+        return users.values().stream()
+                .map(User::getEmail)
+                .anyMatch(existingEmail -> existingEmail.equals(email));
+    }
+
+    @Override
+    public User getUserEmail(String email) {
+        return users.values().stream()
+                .filter(user -> user.getEmail().equals(email))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Email not found."));
     }
 
     @Override
     public void giveAdminPermissions(int userId) {
-        userRepository.giveAdminPermissions(userId);
+        users.values().stream()
+                .filter(user -> user.getUserId() == userId)
+                .findFirst()
+                .ifPresentOrElse(
+                        user -> {
+                            if (user.getRole() != Role.ADMIN) {
+                                user.setRole(Role.ADMIN);
+                            } else {
+                                System.out.println("User is already Admin");
+                            }
+                        },
+                        () -> {throw new IllegalArgumentException("User not found");}
+                );
     }
 
     @Override
     public void blockUser(int userId) {
-        userRepository.blockUser(userId);
+        users.values().stream()
+                .filter(user -> user.getUserId() == userId)
+                .findFirst()
+                .ifPresentOrElse(
+                        user -> user.setRole(Role.BLOCKED),
+                        () -> {throw new IllegalArgumentException("User not found");}
+                );
     }
 
     @Override
     public User findUser(int userId) {
-        User user = userRepository.findUser(userId);
-        return user;
+        return users.values().stream()
+                .filter(user -> user.getUserId() == userId)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("User not found."));
     }
 
     @Override
-    public boolean loginUser(String email, String password) {
-        User user = userRepository.getUserEmail(email);
-        if (user == null || !user.getPassword().equals(password)) {
-            System.out.println("Invalid email or password.");
-            return false;
-        }
-        activeUser = user;
-        return true;
-    }
-
-    @Override
-    public Optional<User> registerUser(String email, String password) throws EmailValidateException, PasswordValidatorException {
-
-        try {
-
-        if (!personValidator.isEmailValid(email)) {
-            System.out.println("Please check the email.");
-            return Optional.empty();
-        }
-        if (!personValidator.isPasswordValid(password)) {
-            System.out.println("Please check the password.");
-            return Optional.empty();
-        }
-        if (!userRepository.isMailExist(email)){
-            user = userRepository.addUser(email, password);
-        }else {
-            System.out.println("Email already exist");
-        }
-        }catch (EmailValidateException | PasswordValidatorException e) {
-        System.out.println(e. getMessage());
-        return Optional.empty();
-    }
-        return Optional.ofNullable(user);
-    }
-
-    @Override
-    public boolean isUserAdmin() {
-        if (activeUser.getRole() != Role.ADMIN) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public boolean isUserBlocked() {
-        if (activeUser == null) {
-            // Если activeUser равен null, значит пользователь не авторизован.
-            throw new IllegalStateException("User is not logged in.");
-        }
-
-        return activeUser.getRole() == Role.BLOCKED;
-
-    }
-
-    @Override
-    public void logout() {
-        activeUser = null;
+    public Map<Integer, User> allUsers() {
+        return new HashMap<>(users);
     }
 
     @Override
     public List<Account> getAccountsByUserId(int userId) {
-        return userRepository.getAccountsByUserId(userId);
+        return users.values().stream()
+                .filter(user -> user.getUserId() == userId)
+                .map(User::getUserAccounts)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("User not found."));
     }
 
-    public User getActiveUser() {
-        return activeUser;
+    public User loginUser(String email, String password) {
+        return users.values().stream()
+                .filter(user -> user.getEmail().equals(email) && user.getPassword().equals(password))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
     }
-
-    // Метод doesAccountExist нужен для проверки существования счета
-    // в системе через метод addTransaction в классе TransactionRepository
- //   public boolean doesAccountExist(int accountID){
-    // Получаем все счета пользователя
-//    List<Account> accounts = getAccountsByUserId(activeUser.getUserId()); // где userId — это ID текущего пользователя
-//    // Проверяем, есть ли среди счетов счет с таким accountID
-//    return accounts.stream()
-//            .anyMatch(account -> account.getAccountId() == accountID); // Если хотя бы один счет с таким ID, возвращаем true
 }
-
-

@@ -13,7 +13,7 @@ public class User {
     public User(String email, String password, int userId) {
         this.email = email;
         this.password = password;
-        this.role = role;
+        this.role = Role.USER; // Установим роль по умолчанию как USER
         this.userId = userId;
     }
 
@@ -70,5 +70,12 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hash(userId, email, password, role);
+    }
+
+    // Добавляем перечисление Role
+    public enum Role {
+        USER,
+        ADMIN,
+        BLOCKED
     }
 }
