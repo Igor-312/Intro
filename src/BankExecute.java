@@ -10,15 +10,27 @@ import utils.validatorExeptions.PasswordValidatorException;
 import view.ConsoleView;
 
 public class BankExecute {
+
     public static void main(String[] args) throws EmailValidateException, PasswordValidatorException, UserNotFoundException {
+
         UserService userService = new UserService();
         AccountRepository accountRepository = new AccountRepository();
-        TransactionRepository transactionRepository = new TransactionRepository(userService);
+        TransactionRepository transactionRepository = new TransactionRepository();
         CurrencyService currencyService = new CurrencyService();
         AccountService accountService = new AccountService(accountRepository, transactionRepository);
-        TransactionService transactionService = new TransactionService(transactionRepository, userService);
+
+        //  создаем TransactionService, передавая в него все зависимости
+        TransactionService transactionService = new TransactionService(
+                accountService,
+                transactionRepository,
+                accountRepository,
+                currencyService,
+                userService
+        );
+
 
         ConsoleView consoleView = new ConsoleView(accountService, transactionService, userService, currencyService);
+
         consoleView.run();
     }
 }

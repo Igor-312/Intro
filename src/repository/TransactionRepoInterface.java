@@ -18,6 +18,6 @@ public interface TransactionRepoInterface {
 
     List<Transaction> getAllTransactions();
 
-    Map<Integer, List<Transaction>> getTransactionsByUserId(int userId);
+  /*  Map<Integer, List<Transaction>> getTransactionsByUserId(int userId);*/
 
 }

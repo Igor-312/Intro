@@ -1,39 +1,83 @@
 package unittest;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import repository.CurrencyRepo;
 import service.CurrencyService;
+import service.CurrencyServiceInterface;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 public class CurrencyServiceTest {
+    private CurrencyServiceInterface currencyService;
+    private CurrencyRepo currencyRepo;
+
+    @BeforeEach
+    void setUp() {
+        currencyRepo = mock(CurrencyRepo.class);
+        currencyService = new CurrencyService(currencyRepo); // Конструктор теперь принимает CurrencyRepo
+    }
 
     @Test
-    public void testShowExchangeRates() {
-        CurrencyService currencyService = new CurrencyService();
+    void testShowExchangeRates() {
+        Map<String, Double> mockRates = new HashMap<>();
+        mockRates.put("USD", 1.0);
+        mockRates.put("EUR", 0.85);
+        when(currencyRepo.getAllExchangeRates()).thenReturn(mockRates);
 
         Map<String, Double> rates = currencyService.showExchangeRates();
         assertNotNull(rates);
-        assertTrue(rates.containsKey("USD"));
-        assertTrue(rates.containsKey("EUR"));
-        assertTrue(rates.containsKey("BTC"));
+        assertEquals(2, rates.size());
+        assertEquals(1.0, rates.get("USD"));
+        assertEquals(0.85, rates.get("EUR"));
     }
 
     @Test
-    public void testChangeCurrencyRate() {
-        CurrencyService currencyService = new CurrencyService();
-
-        currencyService.changeCurrencyRate("USD", 1.1);
-        assertEquals(1.1, currencyService.getExchangeRate("USD"));
+    void testChangeCurrencyRate() {
+        currencyService.changeCurrencyRate("GBP", 0.75);
+        verify(currencyRepo, times(1)).addOrUpdateExchangeRate("GBP", 0.75);
     }
 
     @Test
-    public void testConvertCurrency() {
-        CurrencyService currencyService = new CurrencyService();
+    void testGetExchangeRate() {
+        when(currencyRepo.getExchangeRate("USD")).thenReturn(1.0);
 
-        double convertedAmount = currencyService.convertCurrency("USD", "EUR", 100);
-        assertEquals(85.0, convertedAmount); // Пример, если курс USD к EUR = 0.85
+        Double rate = currencyService.getExchangeRate("USD");
+        assertNotNull(rate);
+        assertEquals(1.0, rate);
+    }
+
+    @Test
+    void testConvertCurrency() {
+        when(currencyRepo.getExchangeRate("USD")).thenReturn(1.0);
+        when(currencyRepo.getExchangeRate("EUR")).thenReturn(0.85);
+
+        double result = currencyService.convertCurrency("USD", "EUR", 100.0);
+        assertEquals(85.0, result);
+    }
+
+    @Test
+    void testConvertCurrencyWithInvalidAmount() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            currencyService.convertCurrency("USD", "EUR", -100.0);
+        });
+
+        assertEquals("Invalid currency or amount", exception.getMessage());
+    }
+
+    @Test
+    void testConvertCurrencyWithUnsupportedCurrency() {
+        when(currencyRepo.getExchangeRate("USD")).thenReturn(1.0);
+        when(currencyRepo.getExchangeRate("EUR")).thenReturn(null);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            currencyService.convertCurrency("USD", "EUR", 100.0);
+        });
+
+        assertEquals("Unsupported currency", exception.getMessage());
     }
 }
