@@ -144,7 +144,7 @@ public class TransactionService implements TransactionServiceInterface {
         Transaction exchangeTransactionFrom = new Transaction(
                 generateTransactionId(),
                 fromAccount.getAccountId(),
-                -convertedAmount,
+                amountOfMoney,
                 LocalDateTime.now(),
                 new Currency(currencyFrom),
                 userId
