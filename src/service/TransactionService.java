@@ -149,8 +149,7 @@ public class TransactionService implements TransactionServiceInterface {
                 0, // Специальный ID для транзакций обмена валют
                 convertedAmount,
                 LocalDateTime.now(),
-                resultingCurrency,
-                new Currency(currencyTo, currencyTo.name())
+                new Currency(currencyTo),
                 userId
         );
 
@@ -210,7 +209,7 @@ public class TransactionService implements TransactionServiceInterface {
        return transactionRepository.getAllTransactions()
                .stream()
                .filter(transaction -> transaction.getUserId() == userId)
-               .collect(Collectors.groupingBy(Transaction::getTransactionId));
+               .collect(Collectors.groupingBy(Transaction::getAccountId));
     }
 
 

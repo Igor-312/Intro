@@ -15,7 +15,7 @@ public class Currency {
 
     @Override
     public String toString() {
-        return "currency" + currencyCode;
+        return " " + currencyCode;
     }
 
     @Override

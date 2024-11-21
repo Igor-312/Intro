@@ -339,7 +339,7 @@ public class ConsoleView {
                 String currencyTo = scanner.nextLine();
 
                 transactionService.exchangeMoney(amountOfMoney,currencyFrom, CurrencyCode.valueOf(currencyTo));
-                System.out.println("Money has been exchanged");
+                //System.out.println("Money has been exchanged");
 
                 waitRead();
                 break;
@@ -366,9 +366,9 @@ public class ConsoleView {
                 Map<Integer, List<Transaction>> myHistory = transactionService.showUserHistory(currentUser.getUserId());
 
                 // Проверяем, есть ли транзакции
-                if (history != null && !history.isEmpty()) {
+                if (myHistory != null && !myHistory.isEmpty()) {
                     // Проходим по всем группам транзакций, сгруппированным по accountId
-                    history.forEach((accountId, transactionList) -> {
+                    myHistory.forEach((accountId, transactionList) -> {
                         System.out.println("Account ID: " + accountId); // Заголовок для каждого аккаунта
                         transactionList.forEach(transaction -> {
                             System.out.println("  " + transaction); // Печать каждой транзакции с отступом
@@ -377,11 +377,9 @@ public class ConsoleView {
                     });
                 } else {
                     // Если нет транзакций, выводим сообщение
-                    System.out.println("Нет доступных транзакций.");
+                    System.out.println("History is empty");
                 }
 
-            
-            
                 waitRead();
                 break;
 
@@ -483,8 +481,9 @@ public class ConsoleView {
             System.out.println("5. Show user history");
             System.out.println(COLOR_BLUE);
             System.out.println("6. Show all users");
+            System.out.println(COLOR_BLUE);
             System.out.println("7. Show list of user accounts");
-
+            System.out.println(COLOR_BLUE);
             System.out.println("0. Back");
 
             System.out.println("\n Select an option.");

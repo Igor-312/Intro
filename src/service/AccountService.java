@@ -85,7 +85,7 @@ public class AccountService implements AccountServiceInterface {
         accountDetails.put("Balance", account.getBalance());
         accountDetails.put("Transactions", transactions != null ? transactions : List.of());
 
-        System.out.println("Account Details: " + accountDetails); // Отладка
+       // System.out.println("Account Details: " + accountDetails); // Отладка
 
         return accountDetails;
     }
