@@ -104,15 +104,14 @@ public class AccountRepository implements AccountRepoInterface {
         System.out.println("Account with id " + accountId + " deleted ");
     }
 
-    public void save(Account fromAccount) {
-    }
 
-    public Account getAccountByCurrency(CurrencyCode currencyFrom) {
+    public Account getAccountByCurrency(CurrencyCode currency) {
         return accountList.stream()
-                .filter(account -> account.getCurrency().equals(currencyFrom))
+                .filter(account -> account.getCurrency().equals(currency))
                 .findFirst()
                 .orElse(null); // если не нашли, вернем null
     }
-    }
+
+}
 
 
