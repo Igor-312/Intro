@@ -123,7 +123,9 @@ public class TransactionRepository implements TransactionRepoInterface {
             allTransactions.addAll(transactions);
         }
         return allTransactions;
+    }
 
 
+    public void save(Transaction exchangeTransaction) {
     }
 }

@@ -9,6 +9,7 @@ import repository.TransactionRepository;
 
 import java.time.LocalDateTime;
 
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import java.util.stream.Collectors;
@@ -118,6 +119,18 @@ public class TransactionService implements TransactionServiceInterface {
         if (amountOfMoney <= 0) {
             throw new IllegalArgumentException("The amount of money must be greater than zero.");
         }
+        // Получение аккаунтов по валютам
+        Account fromAccount = accountRepository.getAccountByCurrency(currencyFrom);
+        Account toAccount = accountRepository.getAccountByCurrency(currencyTo);
+
+        if (fromAccount == null || toAccount == null) {
+            throw new IllegalArgumentException("Account for the specified currency not found.");
+        }
+
+        // Проверка, достаточно ли средств на исходном аккаунте
+        if (fromAccount.getBalance() < amountOfMoney) {
+            throw new IllegalArgumentException("Insufficient funds in " + currencyFrom + " account.");
+        }
 
         int userId = userService.getActiveUser().getUserId();
 
@@ -137,21 +150,59 @@ public class TransactionService implements TransactionServiceInterface {
                 convertedAmount,
                 LocalDateTime.now(),
                 resultingCurrency,
+                new Currency(currencyTo, currencyTo.name())
                 userId
         );
 
-        // Добавление транзакции в репозиторий
-        transactionRepository.addTransaction(0, exchangeTransaction);
+        // Обновление баланса на исходном счете (вычитание суммы)
+        fromAccount.setBalance(fromAccount.getBalance() - amountOfMoney);
 
-        System.out.println("Converted " + amountOfMoney + " from " + currencyFrom + " to " + currencyTo + " with the rate " + exchangeRate);
+        // Обновление баланса на целевом счете (прибавление конвертированной суммы)
+        toAccount.setBalance(toAccount.getBalance() + convertedAmount);
+
+        // Сохранение транзакции и обновленных аккаунтов
+        transactionRepository.save(exchangeTransaction); // сохраняем транзакцию
+        accountRepository.save(fromAccount); // сохраняем обновленный аккаунт
+        accountRepository.save(toAccount); // сохраняем обновленный аккаунт
+
+        System.out.println("Exchanged " + amountOfMoney + " " + currencyFrom + " to " + currencyTo + " at the rate " + exchangeRate);
+        System.out.println("Converted amount: " + convertedAmount + " " + currencyTo);
+        System.out.println("Money has been exchanged");
     }
 
-
     @Override
-    public Map<Integer, List<Transaction>> showHistory() {// Извлечь все транзакции, сгруппированные по account ID
-        return transactionRepository.getAllTransactions()
-                .stream()
+    public Map<Integer, List<Transaction>> showHistory() {
+        // Извлекаем все транзакции
+        List<Transaction> transactions = transactionRepository.getAllTransactions();
+
+        // Вывод всех транзакций
+        System.out.println("Все транзакции:");
+        if (transactions == null || transactions.isEmpty()) {
+            System.out.println("Нет доступных транзакций.");
+        } else {
+            // Печать всех транзакций (если они есть)
+            transactions.forEach(transaction -> System.out.println(transaction));
+        }
+
+        // Группируем транзакции по accountId
+        Map<Integer, List<Transaction>> history = transactions.stream()
                 .collect(Collectors.groupingBy(Transaction::getAccountId));
+
+        // Если нет сгруппированных данных
+        if (history.isEmpty()) {
+            System.out.println("Нет доступных транзакций.");
+        } else {
+
+            // Форматированный вывод для сгруппированных транзакций
+            history.forEach((accountId, transactionList) -> {
+                System.out.println("\nAccount ID: " + accountId);  // Выводим ID аккаунта
+                transactionList.forEach(transaction -> {
+                    System.out.println(String.format("  %s", transaction));  // Выводим транзакцию с отступом
+                });
+            });
+        }
+
+        return history;
     }
 
     @Override
@@ -162,7 +213,8 @@ public class TransactionService implements TransactionServiceInterface {
                .collect(Collectors.groupingBy(Transaction::getTransactionId));
     }
 
-     // AtomicInteger гарантирует, что счетчик будет работать корректно в многозадачных приложениях.
+
+    // AtomicInteger гарантирует, что счетчик будет работать корректно в многозадачных приложениях.
     private static final AtomicInteger transactionIdCounter = new AtomicInteger(0);
 
     private int generateTransactionId() {

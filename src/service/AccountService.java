@@ -31,14 +31,14 @@ public class AccountService implements AccountServiceInterface {
 
     }
         // Получение аккаунта по ID
-    @Override
-    public Account getAccountById(int accountId) {
-        Account account = accountRepo.getAccountById(accountId);
-        if (account == null) {
-            throw new IllegalArgumentException("Account not found with ID: " + accountId);
+        @Override
+        public Account getAccountById(int accountId) {
+            Account account = accountRepo.getAccountById(accountId);
+            if (account == null) {
+                throw new IllegalArgumentException("Account not found with ID: " + accountId);
+            }
+            return account;
         }
-        return account;
-    }
 
     // Пополнение баланса
     @Override
@@ -81,9 +81,11 @@ public class AccountService implements AccountServiceInterface {
         // Подготовка результата для отображения
         Map<String, Object> accountDetails = new HashMap<>();
         accountDetails.put("Account ID", accountId);
-        accountDetails.put("Currency", currencyCode);  // Используем код валюты
+        accountDetails.put("Currency", account.getCurrency().name()); // Используем name() для названия валюты
         accountDetails.put("Balance", account.getBalance());
         accountDetails.put("Transactions", transactions != null ? transactions : List.of());
+
+        System.out.println("Account Details: " + accountDetails); // Отладка
 
         return accountDetails;
     }
@@ -102,22 +104,19 @@ public class AccountService implements AccountServiceInterface {
     // Создание аккаунта в USD
     @Override
     public void createAccountUSD(User user) throws UserNotFoundException{
-
-       accountRepo.createAccount(user.getUserId(),USD, 0.0);
+        Account account = accountRepo.createAccount(user.getUserId(),CurrencyCode.USD, 0.0);
     }
 
     // Создание аккаунта в EUR
     @Override
     public void createAccountEUR(User user)throws UserNotFoundException {
-
-       accountRepo.createAccount(user.getUserId(),EUR, 0.0); // Инициализация с балансом 0
+        Account account = accountRepo.createAccount(user.getUserId(),CurrencyCode.EUR, 0.0); // Инициализация с балансом 0
     }
 
     // Создание аккаунта в BTC
     @Override
     public void createAccountBTC(User user) throws UserNotFoundException {
-
-        accountRepo.createAccount(user.getUserId(),BTC,0.0);
+         Account account = accountRepo.createAccount(user.getUserId(),CurrencyCode.BTC,0.0);
     }
 
     // Показать баланс для аккаунта
