@@ -2,27 +2,21 @@ package models;
 
 public class Account {
     private int accountId;
-    private Currency currency;
+    private CurrencyCode currency;
     private double balance;
-    private User user;
+    private int userId;
 
-    public Account(int accountId, Currency currency, double balance,User user) {
+    public Account(int accountId,CurrencyCode currency, double balance,int userId) {
         this.accountId = accountId;
         this.currency = currency;
         this.balance = balance;
-        this.user = user;
-    }
-
-    public Account(int accountId, String usd, double balance) {
+        this.userId = userId;
     }
 
     @Override
     public String toString() {
-        return "Account{" +
-                "accountId=" + accountId +
-                ", currency=" + currency +
-                ", balance=" + balance +
-                '}';
+        return String.format("Account ID: %d | Currency: %s | Balance: %.2f | User ID: %d",
+                accountId, currency, balance, userId);
     }
 
     public int getAccountId() {
@@ -33,11 +27,11 @@ public class Account {
         this.accountId = accountId;
     }
 
-    public Currency getCurrency() {
+    public CurrencyCode getCurrency() {
         return currency;
     }
 
-    public void setCurrency(Currency currency) {
+    public void setCurrency(CurrencyCode currency) {
         this.currency = currency;
     }
 
@@ -49,11 +43,11 @@ public class Account {
         this.balance = balance;
     }
 
-    public User getUser() {
-        return user;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }

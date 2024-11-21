@@ -107,7 +107,7 @@ public class PersonValidate {
             if (symbols.indexOf(ch) >= 0) isSpecialSymbol = true;
         }
 
-        System.out.printf("%s | %s | %s | %s\n", isDigit, isUpperCase, isLowerCase, isSpecialSymbol);
+        //System.out.printf("%s | %s | %s | %s\n", isDigit, isUpperCase, isLowerCase, isSpecialSymbol);
 
         if (!isDigit) throw new PasswordValidatorException("digit error");
         if (!isUpperCase) throw new PasswordValidatorException("uppercase error");

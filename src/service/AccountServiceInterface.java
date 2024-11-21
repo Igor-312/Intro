@@ -1,20 +1,22 @@
 package service;
 import java.util.Map;
 import models.Account;
+import models.User;
+import utils.UserNotFoundException;
 
 import java.util.List;
 
 public interface AccountServiceInterface {
 
-    void createAccountUSD();
+    void createAccountUSD(User user) throws UserNotFoundException;
 
-    void createAccountEUR();
+    void createAccountEUR(User user) throws UserNotFoundException;
 
-    void createAccountBTC();
+    void createAccountBTC(User user) throws UserNotFoundException;
 
     Map<Integer, List<Account>> showBalance(int accountID);
 
-    Map<Integer, List<Account>> myAccounts();
+    List<Account> myAccounts(User user) throws UserNotFoundException;
   
     // Получение аккаунта по ID
     Account getAccountById(int accountId);
@@ -24,6 +26,8 @@ public interface AccountServiceInterface {
 
     // Снятие средств
     void withdraw(int accountId, double amount);
+
+    Map<String, Object> getAccountDetails(int accountId);
 
     // Удаление аккаунта
     void deleteAccount(int accountId);

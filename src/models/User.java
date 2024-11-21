@@ -5,20 +5,16 @@ import java.util.Objects;
 
 public class User {
 
-    private static int userIdCounter = 0;
     private int userId;
     private String email;
     private String password;
     private Role role;
 
-    private List<Account> userAccounts;
-
-    public User(String email, String password) {
+    public User(String email, String password, int userId) {
         this.email = email;
         this.password = password;
-        this.userAccounts = userAccounts;
         this.role = role;
-        this.userId = userIdCounter++;
+        this.userId = userId;
     }
 
     @Override
@@ -28,7 +24,6 @@ public class User {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", role=" + role +
-                ", userAccounts=" + userAccounts +
                 '}';
     }
 
@@ -64,24 +59,16 @@ public class User {
         this.role = role;
     }
 
-    public List<Account> getUserAccounts() {
-        return userAccounts;
-    }
-
-    public void addUserAccount(Account accounts) {
-        this.userAccounts.add(accounts);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return userId == user.userId && Objects.equals(email, user.email) && Objects.equals(password, user.password) && role == user.role && Objects.equals(userAccounts, user.userAccounts);
+        return userId == user.userId && Objects.equals(email, user.email) && Objects.equals(password, user.password) && role == user.role;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, email, password, role, userAccounts);
+        return Objects.hash(userId, email, password, role);
     }
 }

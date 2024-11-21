@@ -1,45 +1,50 @@
 package repository;
 
-import models.Account;
-import models.Role;
-import models.User;
+import models.*;
+import utils.UserNotFoundException;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class UserRepository implements UserRepoInterface{
-    private static Map<Integer, User> users = new HashMap<>();
-    private static int userIdCounter = 1;
-    private AccountRepository accountRepository;
+    public static Map<Integer, User> users = new HashMap<>();
+    private final AtomicInteger atomicInteger = new AtomicInteger(1);
+
 
     public UserRepository() {
-        this.accountRepository = new AccountRepository();
+        addDefaultUsers();
+        addTestAdmin();
+
     }
 
     public void addDefaultUsers(){
-        users.put(1, new User("Masha123@gmail.com", "Masha123@gmail.com"));
-        users.put(2, new User("Neshyna123@gmail.com", "Neshyna123@gmail.com"));
+        users.put(111, new User("Masha123@gmail.com", "Masha123@gmail.com",88));
     }
+
+    public void addTestAdmin(){
+        User admin = new User("Neshyna123@gmail.com", "Neshyna123@gmail.com",99);
+        admin.setRole(Role.ADMIN);
+        users.put(222,admin);
+    }
+
 
     public User addUser(String email, String password){
 
         if (isMailExist(email)) {
             throw new IllegalArgumentException("Email already exists.");
         }
-        User newUser = new User(email,password);
-        users.put(userIdCounter++,newUser);
+        int userId = atomicInteger.getAndIncrement();
+        User newUser = new User(email,password,userId);
+        users.put(atomicInteger.getAndIncrement(),newUser);
         return newUser;
     }
 
     public boolean isMailExist(String email) {
-       if (users.values().stream()
+       return users.values().stream()
                 .map(User::getEmail)
-                .allMatch(existEmail -> existEmail.equals(email))){
-        return true;
-       }
-       return false;
+                .anyMatch(existEmail -> existEmail.equals(email));
     }
 
     public User getUserEmail(String email) {
@@ -87,28 +92,7 @@ public class UserRepository implements UserRepoInterface{
         return users;
     }
 
-    @Override
     public List<Account> getAccountsByUserId(int userId) {
-        List<Account> userAccounts = users.values().stream()
-                .filter(user -> user.getUserId() == userId)
-                .map(user -> user.getUserAccounts())
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("User not found."));
-
-        if (userAccounts == null) {
-            throw new IllegalStateException("The list of user accounts is null");
-        }
-        return userAccounts;
-    }
-
-    public Account createAccountForUser(int userId, String accountType, double initialBalance) {
-
-        User user = users.get(userId);
-        if (user == null) {
-            throw new IllegalArgumentException("User not found.");
-        }
-        Account newAccount = accountRepository.createAccount(accountType,initialBalance);
-        user.addUserAccount(newAccount);
-        return newAccount;
+        return List.of();
     }
 }

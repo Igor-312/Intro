@@ -30,12 +30,14 @@ public class UserServiceTest {
         userRepository = mock(UserRepository.class);
         userService = new UserService(userRepository);
         users = new HashMap<>();
-        users.put(1, new User("Masha123@gmail.com", "password123"));
-        users.put(2, new User("Neshyna123@gmail.com", "password123"));
+
+        users.put(1, new User("Masha123@gmail.com", "password123",88));
+        users.put(2, new User("Neshyna123@gmail.com", "password123",99));
 
         // Настройка моков для репозитория
         when(userRepository.getUserEmail("Masha123@gmail.com")).thenReturn(users.get(1));
         when(userRepository.getUserEmail("Neshyna123@gmail.com")).thenReturn(users.get(2));
+
     }
 
     @ParameterizedTest
@@ -111,30 +113,37 @@ public class UserServiceTest {
     }
 
     @Test
+
     public void testGiveAdminPermissions() {
-        User user1 = new User("User1@example.com", "password123");
+        User user1 = new User("User1@example.com", "password123",78);
         when(userRepository.findUser(3)).thenReturn(user1);
         userService.giveAdminPermissions(3); // userId 3 as we already have users with id 1 and 2
+
         assertEquals(Role.ADMIN, user1.getRole());
     }
 
     @Test
+
     public void testBlockUser() {
-        User user = new User("User2@example.com", "password123");
+        User user = new User("User2@example.com", "password123",56);
         when(userRepository.findUser(3)).thenReturn(user);
         userService.blockUser(3); // userId 3 as we already have users with id 1 and 2
+
         assertEquals(Role.BLOCKED, user.getRole());
     }
 
     @Test
+
     public void testFindUser() {
-        User user = new User("Masha123@gmail.com", "password123");
+        User user = new User("Masha123@gmail.com", "password123",34);
         when(userRepository.findUser(1)).thenReturn(user);
 
         User foundUser = userService.findUser(1);
         assertNotNull(foundUser);
         assertEquals("Masha123@gmail.com", foundUser.getEmail());
         assertEquals("password123", foundUser.getPassword());
+
+
     }
 
     @Test
@@ -146,8 +155,9 @@ public class UserServiceTest {
     }
 
     @Test
+
     public void testIsUserAdmin_WhenAdmin() {
-        User user = new User("Neshyna123@gmail.com", "password123");
+        User user = new User("Neshyna123@gmail.com", "password123",54);
         user.setRole(Role.ADMIN);
         when(userRepository.getUserEmail("Neshyna123@gmail.com")).thenReturn(user);
         userService.loginUser("Neshyna123@gmail.com", "password123");
@@ -157,8 +167,9 @@ public class UserServiceTest {
     }
 
     @Test
+
     public void testIsUserAdmin_WhenNotAdmin() {
-        User user = new User("Masha123@gmail.com", "password123");
+        User user = new User("Masha123@gmail.com", "password123",55);
         user.setRole(Role.USER);
         when(userRepository.getUserEmail("Masha123@gmail.com")).thenReturn(user);
         userService.loginUser("Masha123@gmail.com", "password123");

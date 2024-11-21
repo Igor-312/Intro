@@ -26,6 +26,6 @@ public interface UserRepoInterface {
 
     Map<Integer, User> allUsers();
   
-    List<Account> getAccountsByUserId(int userId);
+
 }
 
