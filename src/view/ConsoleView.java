@@ -336,9 +336,10 @@ public class ConsoleView {
                 scanner.nextLine();
                 System.out.println(COLOR_WHITE);
                 System.out.println("Currency (to): ");
-                String currencyTo = scanner.nextLine();
+                CurrencyCode currencyTo = CurrencyCode.valueOf(scanner.nextLine());
+                scanner.nextLine();
 
-                transactionService.exchangeMoney(amountOfMoney,currencyFrom, CurrencyCode.valueOf(currencyTo));
+                transactionService.exchangeMoney(amountOfMoney,currencyFrom, currencyTo);
                 //System.out.println("Money has been exchanged");
 
                 waitRead();

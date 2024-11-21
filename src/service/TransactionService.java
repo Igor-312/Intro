@@ -140,13 +140,19 @@ public class TransactionService implements TransactionServiceInterface {
         // Вычисление конвертированной суммы
         double convertedAmount = amountOfMoney * exchangeRate;
 
-        // Создание объекта Currency для результата
-        Currency resultingCurrency = new Currency(currencyTo);
-
         // Создание транзакции
-        Transaction exchangeTransaction = new Transaction(
+        Transaction exchangeTransactionFrom = new Transaction(
                 generateTransactionId(),
-                0, // Специальный ID для транзакций обмена валют
+                fromAccount.getAccountId(),
+                -convertedAmount,
+                LocalDateTime.now(),
+                new Currency(currencyFrom),
+                userId
+        );
+
+        Transaction exchangeTransactionTo = new Transaction(
+                generateTransactionId(),
+                toAccount.getAccountId(),
                 convertedAmount,
                 LocalDateTime.now(),
                 new Currency(currencyTo),
@@ -160,9 +166,9 @@ public class TransactionService implements TransactionServiceInterface {
         toAccount.setBalance(toAccount.getBalance() + convertedAmount);
 
         // Сохранение транзакции и обновленных аккаунтов
-        transactionRepository.save(exchangeTransaction); // сохраняем транзакцию
-        accountRepository.save(fromAccount); // сохраняем обновленный аккаунт
-        accountRepository.save(toAccount); // сохраняем обновленный аккаунт
+
+        transactionRepository.addTransaction(fromAccount.getAccountId() ,exchangeTransactionFrom);
+        transactionRepository.addTransaction(toAccount.getAccountId() ,exchangeTransactionTo);
 
         System.out.println("Exchanged " + amountOfMoney + " " + currencyFrom + " to " + currencyTo + " at the rate " + exchangeRate);
         System.out.println("Converted amount: " + convertedAmount + " " + currencyTo);

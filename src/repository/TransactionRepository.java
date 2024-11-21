@@ -125,8 +125,4 @@ public class TransactionRepository implements TransactionRepoInterface {
         return allTransactions;
     }
 
-
-    public void save(Transaction exchangeTransaction) {
-
-    }
 }
