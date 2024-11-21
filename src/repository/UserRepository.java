@@ -20,13 +20,13 @@ public class UserRepository implements UserRepoInterface{
     }
 
     public void addDefaultUsers(){
-        users.put(1, new User("Masha123@gmail.com", "Masha123@gmail.com",88));
+        users.put(111, new User("Masha123@gmail.com", "Masha123@gmail.com",88));
     }
 
     public void addTestAdmin(){
         User admin = new User("Neshyna123@gmail.com", "Neshyna123@gmail.com",99);
         admin.setRole(Role.ADMIN);
-        users.put(2,admin);
+        users.put(222,admin);
     }
 
 

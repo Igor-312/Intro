@@ -25,16 +25,18 @@ public class TransactionService implements TransactionServiceInterface {
     private final AccountService accountService;
     private final AccountRepository accountRepository;
     private final CurrencyService currencyService;
+    private final UserService userService;
 
    public TransactionService(AccountService accountService,
-                       TransactionRepository transactionRepository,
-                       AccountRepository accountRepository,
-                       CurrencyService currencyService) {
+                             TransactionRepository transactionRepository,
+                             AccountRepository accountRepository,
+                             CurrencyService currencyService, UserService userService) {
         this.accountService = accountService;
         this.transactionRepository = transactionRepository;
         this.accountRepository = accountRepository;
         this.currencyService = currencyService;
-    }
+        this.userService = userService;
+   }
 
     @Override
     public void addMoney(int accountID, double amountOfMoney) {
@@ -51,14 +53,17 @@ public class TransactionService implements TransactionServiceInterface {
         // Обновление баланса аккаунта
         accountService.deposit(accountID, amountOfMoney);
 
+        int userId = account.getUserId();
+
         // Создание новой транзакции
         Transaction newTransaction = new Transaction(
                 generateTransactionId(),
                 accountID,
                 amountOfMoney,
                 LocalDateTime.now(),
-                new Currency(account.getCurrency(), account.getCurrency().toString()) // Генерация объекта Currency
-        );
+                new Currency(account.getCurrency()), // Генерация объекта Currency
+                userId
+                );
 
         // Добавление транзакции в репозиторий
         transactionRepository.addTransaction(accountID, newTransaction);
@@ -80,13 +85,16 @@ public class TransactionService implements TransactionServiceInterface {
         // Обновление баланса после транзакции (если требуется)
         accountRepository.updateAccountBalance(accountID, -amountOfMoney);
 
+        int userId = userService.getActiveUser().getUserId();
+
         // Создание транзакции на снятие средств
         Transaction withdrawalTransaction = new Transaction(
                 generateTransactionId(),
                 accountID,
                 -amountOfMoney, // Отрицательное значение для снятия
                 LocalDateTime.now(),
-                new Currency(USD, "Доллар США")
+                new Currency(USD),
+                userId
         );
 
         // Добавление транзакции в репозиторий
@@ -124,6 +132,7 @@ public class TransactionService implements TransactionServiceInterface {
             throw new IllegalArgumentException("Insufficient funds in " + currencyFrom + " account.");
         }
 
+        int userId = userService.getActiveUser().getUserId();
 
         // Получение курса обмена
         double exchangeRate = getExchangeRate(currencyFrom, currencyTo);
@@ -132,7 +141,7 @@ public class TransactionService implements TransactionServiceInterface {
         double convertedAmount = amountOfMoney * exchangeRate;
 
         // Создание объекта Currency для результата
-        Currency resultingCurrency = new Currency(currencyTo, currencyTo.name());
+        Currency resultingCurrency = new Currency(currencyTo);
 
         // Создание транзакции
         Transaction exchangeTransaction = new Transaction(
@@ -140,7 +149,9 @@ public class TransactionService implements TransactionServiceInterface {
                 0, // Специальный ID для транзакций обмена валют
                 convertedAmount,
                 LocalDateTime.now(),
+                resultingCurrency,
                 new Currency(currencyTo, currencyTo.name())
+                userId
         );
 
         // Обновление баланса на исходном счете (вычитание суммы)
@@ -196,10 +207,10 @@ public class TransactionService implements TransactionServiceInterface {
 
     @Override
     public Map<Integer, List<Transaction>> showUserHistory(int userId) {
-        return transactionRepository.getAllTransactions()
-                .stream()
-                .filter(transaction -> transaction.getUserId() == userId)
-                .collect(Collectors.groupingBy(Transaction::getAccountId));
+       return transactionRepository.getAllTransactions()
+               .stream()
+               .filter(transaction -> transaction.getUserId() == userId)
+               .collect(Collectors.groupingBy(Transaction::getTransactionId));
     }
 
 

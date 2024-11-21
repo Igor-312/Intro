@@ -21,16 +21,14 @@ import static models.CurrencyCode.*;
 
 public class AccountService implements AccountServiceInterface {
 
-
-//    private final TransactionService transactionService;
     private final AccountRepository accountRepo;
     private final TransactionRepository transactionRepository;
 
     public AccountService(AccountRepository accountRepository, TransactionRepository transactionRepository) {
       //  this.transactionService = transactionService; // Передаем через конструктор
         this.accountRepo = accountRepository;
-
         this.transactionRepository = transactionRepository;
+
     }
         // Получение аккаунта по ID
         @Override
@@ -106,22 +104,19 @@ public class AccountService implements AccountServiceInterface {
     // Создание аккаунта в USD
     @Override
     public void createAccountUSD(User user) throws UserNotFoundException{
-
         Account account = accountRepo.createAccount(user.getUserId(),CurrencyCode.USD, 0.0);
     }
 
     // Создание аккаунта в EUR
     @Override
     public void createAccountEUR(User user)throws UserNotFoundException {
-
         Account account = accountRepo.createAccount(user.getUserId(),CurrencyCode.EUR, 0.0); // Инициализация с балансом 0
     }
 
     // Создание аккаунта в BTC
     @Override
     public void createAccountBTC(User user) throws UserNotFoundException {
-
-        accountRepo.createAccount(user.getUserId(),CurrencyCode.BTC,0.0);
+         Account account = accountRepo.createAccount(user.getUserId(),CurrencyCode.BTC,0.0);
     }
 
     // Показать баланс для аккаунта
@@ -137,8 +132,10 @@ public class AccountService implements AccountServiceInterface {
 
     @Override
     public List<Account> myAccounts(User user) throws UserNotFoundException {
-
         return accountRepo.userAccountsByUserId(user.getUserId());
+    }
 
+    public List<Account> listOfUserAccountsByUserId(int userId){
+        return accountRepo.userAccountsByUserId(userId);
     }
 }

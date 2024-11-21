@@ -362,7 +362,9 @@ public class ConsoleView {
                 System.out.println(COLOR_BLUE);
                 System.out.println("History");
 
-                Map<Integer, List<Transaction>> history = transactionService.showHistory();
+                currentUser = userService.getActiveUser();
+                Map<Integer, List<Transaction>> myHistory = transactionService.showUserHistory(currentUser.getUserId());
+
                 // Проверяем, есть ли транзакции
                 if (history != null && !history.isEmpty()) {
                     // Проходим по всем группам транзакций, сгруппированным по accountId
@@ -378,8 +380,8 @@ public class ConsoleView {
                     System.out.println("Нет доступных транзакций.");
                 }
 
-                // System.out.println(history);
-
+            
+            
                 waitRead();
                 break;
 
@@ -387,7 +389,7 @@ public class ConsoleView {
                 System.out.println(COLOR_BLUE);
                 System.out.println("Show currency exchange rates");
                 Map<String,Double> exchangeRates = currencyService.showExchangeRates();
-                System.out.println(exchangeRates);
+                exchangeRates.forEach((key, value) -> System.out.println(key + ": " + value));
 
                 waitRead();
                 break;
@@ -410,7 +412,7 @@ public class ConsoleView {
                 System.out.println("My accounts");
                 currentUser = userService.getActiveUser();
                 List<Account> myAccounts = accountService.myAccounts(currentUser);
-                System.out.println(myAccounts);
+                myAccounts.forEach(System.out::println);
 
                 waitRead();
                 break;
@@ -426,8 +428,10 @@ public class ConsoleView {
     }
 
     private void showAccountDetails() {
-            System.out.println(COLOR_BLUE);
-            System.out.println("Enter account ID to view details:");
+
+        System.out.println(COLOR_BLUE);
+        System.out.println("Enter account ID to view details:");
+
         int accountId = scanner.nextInt();
         scanner.nextLine();
 
@@ -479,6 +483,7 @@ public class ConsoleView {
             System.out.println("5. Show user history");
             System.out.println(COLOR_BLUE);
             System.out.println("6. Show all users");
+            System.out.println("7. Show list of user accounts");
 
             System.out.println("0. Back");
 
@@ -563,8 +568,8 @@ public class ConsoleView {
                 userId = scanner.nextInt();
                 scanner.nextLine();
 
-                Map<Integer, List<Transaction>> history = transactionService.showUserHistory(userId);
-                System.out.println(history);
+                Map<Integer, List<Transaction>> userTrans = transactionService.showUserHistory(userId);
+                userTrans.forEach((key, value) -> System.out.println(key + ": " + value));
 
                 waitRead();
                 break;
@@ -574,10 +579,19 @@ public class ConsoleView {
                 System.out.println("Show all users");
 
                 Map<Integer, User> users = userService.allUsers();
-                System.out.println(users);
+                users.forEach((key, value) -> System.out.println(key + ": " + value));
 
                 waitRead();
                 break;
+
+            case 7:
+                System.out.println("List of user accounts ");
+                System.out.println("Insert user id: ");
+                userId = scanner.nextInt();
+                scanner.nextLine();
+                List<Account> userAccounts = accountService.listOfUserAccountsByUserId(userId);
+
+                userAccounts.forEach(System.out::println);
 
             default:
                 System.out.println(COLOR_RED);

@@ -8,7 +8,6 @@ public class Account {
 
     public Account(int accountId,CurrencyCode currency, double balance,int userId) {
         this.accountId = accountId;
-
         this.currency = currency;
         this.balance = balance;
         this.userId = userId;
